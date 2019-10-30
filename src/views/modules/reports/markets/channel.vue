@@ -124,7 +124,6 @@
 <script>
 import filterBox from './filter-box.vue'
 // import totalFloat from './total-float'
-
 import http from 'src/services/http';
 import { log } from 'util';
 export default {
