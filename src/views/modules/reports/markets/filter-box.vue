@@ -101,7 +101,7 @@
 <script>
 import http from 'src/services/http';
 export default {
-  // name: "selectBox",
+  name: "selectBox",
   data() {
     return {
       viewValue: '1',     //视图下标
