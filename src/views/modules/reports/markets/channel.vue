@@ -33,7 +33,7 @@
         </div>
         <!-- left -->
         <section class="left">
-          <div style="width: 90%;      margin: 10px 10%;">
+          <div style="width: 90%;margin: 10px 10%;">
             <el-autocomplete
               class="inline-input"
               v-model="inputTxt"
