@@ -122,12 +122,12 @@
   </div>
 </template>
 <script>
-// import selectBox from './selectBox.vue'
+import selectBox from './selectBox.vue'
 import http from 'src/services/http';
 import { log } from 'util';
 export default {
+  components: { selectBox },
   props: ['data', '_config', '_types'],
-  // components: { selectBox },
   data: () => {
     return {
       $_chartIsReady: 0,
