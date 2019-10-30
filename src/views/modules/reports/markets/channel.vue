@@ -128,7 +128,7 @@ import totalFloat from './total-float'
 import http from 'src/services/http';
 import { log } from 'util';
 export default {
-  components: { selectBox,totalFloat },
+  components: { totalFloat },
   props: ['data', '_config', '_types'],
   data: () => {
     return {
