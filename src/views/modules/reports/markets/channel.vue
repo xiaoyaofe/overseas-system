@@ -121,7 +121,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import selectBox from './selectBox.vue'
 import http from 'src/services/http';
