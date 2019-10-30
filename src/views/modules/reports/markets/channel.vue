@@ -77,7 +77,7 @@
         </section>
       </div>
       <!-- 筛选框 -->
-      <!-- <select-box :style="{width:'300px',right:`${width}px`}"></!--> 
+      <filter-box :style="{width:'300px',right:`${width}px`}"></filter-box>
       <!-- 表格 -->
       <div v-show="$store.state.o_r_delivery.tableIsVisible" class="table-item">
         <!-- 标题 -->
@@ -122,13 +122,13 @@
   </div>
 </template>
 <script>
-// import selectBox from './test.vue'
-import totalFloat from './total-float'
+import filterBox from './filter-box.vue'
+// import totalFloat from './total-float'
 
 import http from 'src/services/http';
 import { log } from 'util';
 export default {
-  components: { totalFloat },
+  components: { filterBox },
   props: ['data', '_config', '_types'],
   data: () => {
     return {
