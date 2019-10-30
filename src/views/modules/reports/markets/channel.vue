@@ -77,7 +77,7 @@
         </section>
       </div>
       <!-- 筛选框 -->
-      <select-box :style="{width:'300px',right:`${width}px`}"></select-box>
+      <filter-box :style="{width:'300px',right:`${width}px`}"></filter-box>
       <!-- 表格 -->
       <div v-show="$store.state.o_r_delivery.tableIsVisible" class="table-item">
         <!-- 标题 -->
@@ -123,12 +123,12 @@
 </template>
 
 <script>
-import selectBox from './filter-box.vue'
+import filterBox from './filter-box.vue'
 import http from 'src/services/http';
 import { log } from 'util';
 export default {
   props: ['data', '_config', '_types'],
-  components: { selectBox },
+  components: { filterBox },
   data: () => {
     return {
       $_chartIsReady: 0,
