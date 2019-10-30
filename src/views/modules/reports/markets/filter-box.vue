@@ -101,8 +101,6 @@
 <script>
 import http from 'src/services/http';
 export default {
-
-  
   // name: "selectBox",
   data() {
     return {
