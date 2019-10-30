@@ -122,11 +122,13 @@
   </div>
 </template>
 <script>
-import selectBox from './test.vue'
+// import selectBox from './test.vue'
+import totalFloat from './total-float'
+
 import http from 'src/services/http';
 import { log } from 'util';
 export default {
-  components: { selectBox },
+  components: { selectBox,totalFloat },
   props: ['data', '_config', '_types'],
   data: () => {
     return {
