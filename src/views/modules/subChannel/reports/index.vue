@@ -33,18 +33,7 @@
           </el-date-picker>
         </div>
       </section>
-      <div class="system-sel" style="padding-left:200px">
-        <el-button-group class="group">
-          <el-button size="medium">
-            <span>系统</span>
-          </el-button>
-          <el-select @change="osChange" class="os" v-model="osOptions.os" size="medium" style="width: 100px;">
-            <el-option v-for="item in osOptions.list" :key="item.os" :label="item.txt" :value="item.os"></el-option>
-          </el-select>
-        </el-button-group>
-      </div>
-
-      <div class="game-sel">
+      <div class="game-sel" style="padding-left:200px">
         <el-button-group class="group">
           <el-button size="medium">
             <span>游戏</span>
@@ -55,7 +44,16 @@
           </el-button>
         </el-button-group>
       </div>
-
+       <div class="system-sel" >
+        <el-button-group class="group">
+          <el-button size="medium">
+            <span>系统</span>
+          </el-button>
+          <el-select @change="osChange" class="os" v-model="osOptions.os" size="medium" style="width: 100px;">
+            <el-option v-for="item in osOptions.list" :key="item.os" :label="item.txt" :value="item.os"></el-option>
+          </el-select>
+        </el-button-group>
+      </div>
       <div class="channel-sel">
         <el-button-group class="group">
           <el-button size="medium">
@@ -90,7 +88,7 @@
       </div>
     </my-row>
     <my-row>
-      <tsdp :data="tsdp" v-if="tsdp.isShow" :auto-confirm="true"></tsdp>
+    <tsdp :data="tsdp" v-if="tsdp.isShow" :auto-confirm="true"></tsdp>
     </my-row>    
       <pagination
         v-if="$$subChannelData.length"
@@ -330,6 +328,9 @@ export default {
       }
       return this._state.subChannelConfig
     },
+    watchGame() {
+      return this.osOptions.os;
+    }
   },
   watch: {
     pickerOptionsDate(newValue,oldValue){
@@ -352,6 +353,11 @@ export default {
       });
       this.$store.commit(this.SMN + '/setPayDate', date)
     },
+    watchGame(newValue,oldValue){
+      this.channelOptions.channel = null
+      this.channelOptions.in_site_type = null
+      this.channelQuery();
+    }
   },
   methods: {
     cahngePage(data){
@@ -391,6 +397,7 @@ export default {
       this.tsdp.game = game;
       this.tsdp.gameArr = gameArr;
       this.channelOptions.channel = null
+      this.channelOptions.in_site_type = null
       this.channelQuery();
     },
     dateChange(value) {

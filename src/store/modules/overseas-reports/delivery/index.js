@@ -961,7 +961,8 @@ export default {
         areaData=(['all'].concat([...new Set(allData.map(item=>item.country_name))]).map((item,i)=>{return {lable:item==='all'?'全部':item,value:item==='all'?'all':[...new Set(allData.map(item=>item['国家']))][i-1]}}))
         
       }
-      state.channelSelectData =  {'packageNameData':packageNameData,
+      state.channelSelectData =  {
+                                  'packageNameData':packageNameData,
                                   "packageNameValue":packageNameValue,
                                   'channelData':channelData,
                                   "channelDataValue":channelDataValue,

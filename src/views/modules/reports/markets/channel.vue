@@ -77,7 +77,7 @@
         </section>
       </div>
       <!-- 筛选框 -->
-      <filter-box :style="{width:'300px',right:`${width}px`}"></filter-box>
+      <filter-box :style="{width:'300px',right:`${width}px`}" @sendParams="sendParams"></filter-box>
       <!-- 表格 -->
       <div v-show="$store.state.o_r_delivery.tableIsVisible" class="table-item">
         <!-- 标题 -->
@@ -114,7 +114,7 @@
             :formatter="formatter"
             :fixed="i<=2?true:false"
             :width="getWidth(item)"
-            :sortable="i>1?true:false"
+            :sortable="(i!=1 && viewValue == 2)?true:false"
           ></el-table-column>
         </el-table>
       </div>
@@ -149,6 +149,7 @@ export default {
       lineArr: [],
       lineData: [],
       show: [],
+      viewValue:-1,
     };
   },
   computed: {
@@ -183,7 +184,6 @@ export default {
   },
   created() {
     this.dataInit()
-
   },
   watch: {
     $$getChannelInfo(newValue, oldValue) {
@@ -230,6 +230,7 @@ export default {
       };
       this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? 'channel' : 'legend' });
     },
+    
   },
   methods: {
     getSummaries(param) {
@@ -630,6 +631,9 @@ export default {
       this.titleOptions = this._state.filterTitleData;
       this.titleOptionsCopy = this._state.filterTitleData;
       this.titleValue = this._state.filterTitleDataValue;
+    },
+    sendParams(data){
+      this.viewValue = data;
     }
   }
 }; 

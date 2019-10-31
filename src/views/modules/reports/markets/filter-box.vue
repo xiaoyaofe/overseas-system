@@ -101,6 +101,10 @@
 <script>
 import http from 'src/services/http';
 export default {
+<<<<<<< HEAD
+=======
+  props:["sendParams"],
+>>>>>>> master
   data() {
     return {
       viewValue: '1',     //视图下标
@@ -162,8 +166,13 @@ export default {
   methods: {
     init_selectData(newValue) {
       if (newValue) {
+<<<<<<< HEAD
         this.viewValue = "1";
         this.systemValue = ["all", "0", "1"];
+=======
+        this.viewValue = newValue.viewValue?newValue.viewValue:"1";
+        this.systemValue = newValue.systemValue?newValue.systemValue:["all", "0", "1"];
+>>>>>>> master
         this.packageNameValue = newValue.packageNameValue;
         this.packageNameOptions = newValue.packageNameData;
         this.packageNameOptionsCopy = newValue.packageNameValue;
@@ -297,7 +306,10 @@ export default {
       } else {
         params.in_chart_type = 2
       }
-      var newSelectData = {        'packageNameData': this.packageNameOptions,
+      var newSelectData = {    
+        'viewValue':this.viewValue,
+        "systemValue":this.systemValue,
+        'packageNameData': this.packageNameOptions,
         "packageNameValue": this.packageNameValue,
         'channelData': this.channelOptions,
         "channelDataValue": this.channelValue,
@@ -306,7 +318,8 @@ export default {
         "allData": this._state.channelSelectDataBak.allData,
       };
       this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? 'channel' : 'legend' }).then(() => {
-        this.$store.commit("o_r_delivery/set_channelSelectDataInfo", newSelectData)
+        this.$store.commit("o_r_delivery/set_channelSelectDataInfo", newSelectData);
+        this.$emit('sendParams',this.viewValue)
       });
 
 
