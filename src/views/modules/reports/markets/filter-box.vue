@@ -101,10 +101,7 @@
 <script>
 import http from 'src/services/http';
 export default {
-<<<<<<< HEAD
-=======
   props:["sendParams"],
->>>>>>> master
   data() {
     return {
       viewValue: '1',     //视图下标
@@ -166,13 +163,8 @@ export default {
   methods: {
     init_selectData(newValue) {
       if (newValue) {
-<<<<<<< HEAD
-        this.viewValue = "1";
-        this.systemValue = ["all", "0", "1"];
-=======
         this.viewValue = newValue.viewValue?newValue.viewValue:"1";
         this.systemValue = newValue.systemValue?newValue.systemValue:["all", "0", "1"];
->>>>>>> master
         this.packageNameValue = newValue.packageNameValue;
         this.packageNameOptions = newValue.packageNameData;
         this.packageNameOptionsCopy = newValue.packageNameValue;
