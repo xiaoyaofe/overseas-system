@@ -710,24 +710,24 @@ export default {
         }
       } else {
         //如果是查询按钮,判断是当前查询组件
-        console.log('tag', '按下的是查询按钮')
+        // console.log('tag', '按下的是查询按钮')
         if (!this.data.game) {
           this.isSingle = true;
-          console.log('tag', '查询全部')
+          // console.log('tag', '查询全部')
           this.in_rpt_type = 2;
           this.in_view_type = 0;
         } else {
-          console.log('tag', '查询单个全部')
+          // console.log('tag', '查询单个全部')
           if (this.data.game) {
             this.isSingle = false;
             this.in_rpt_type = 4
             this.in_view_type = 1
             // this.in_chart_type = 1
             if (this.$store.state.o_r_delivery.tableIsVisible) {
-              console.log('tag', '查询channel table数据')
+              // console.log('tag', '查询channel table数据')
               this.in_chart_type = 1
             } else {
-              console.log('tag', '查询channel legend数据')
+              // console.log('tag', '查询channel legend数据')
               this.in_chart_type = 2
 
             }

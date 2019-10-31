@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import 'default-passive-events'
 import 'src/scss/style.scss'
 import {
   Tag,
@@ -66,8 +67,6 @@ import clipboard from 'clipboard';
 //注册到vue原型上
 Vue.prototype.clipboard = clipboard;
 
-
-
 Number.prototype.format = String.prototype.format = function (number) {
   var {
     round,
@@ -86,6 +85,7 @@ const i18n = new VueI18n({
   fallbackLocale: 'CHS', // 当多语言字段不存在时使用的语言
   messages, // 多语言配置
 })
+
 import VueAwesomeSwiper from 'vue-awesome-swiper' //轮播图插件
 import 'swiper/dist/css/swiper.css'
 Vue.use(VueAwesomeSwiper)

@@ -25,6 +25,7 @@
     "connect-history-api-fallback": "^1.5.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.0",
+    "default-passive-events": "^1.0.10",
     "element-ui": "^2.2.2",
     "es6-promise": "^4.2.4",
     "esdoc": "^0.5.2",

@@ -1,39 +1,40 @@
 <template>
-
   <div class="sub-channel-reports">
-    <my-row class="selection-box">
-      <section class="dateTime">
+    <section class="selection-box">
+      <!-- 日期 -->
+      <div class="dateTime">
         <div class="time-picker">
           激活时间
-          <el-date-picker 
-            @change="dateChange" 
-            size="medium" 
-            :picker-options="pickerOptions" 
-            ref="picker" 
-            v-model="pickerOptionsDate" 
-            type="daterange" 
-            range-separator="至" 
-            start-placeholder="开始日期" 
-            end-placeholder="结束日期" 
-            top="100">
-          </el-date-picker>
+          <el-date-picker
+            size="medium"
+            :picker-options="dateOptions"
+            ref="picker"
+            v-model="activationTime"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            top="100"
+            :clearable="false"
+          ></el-date-picker>
         </div>
-        <div class="time-picker" style="margin-left:8px">
+        <div class="time-picker">
           充值时间
-          <el-date-picker 
-          @change="payDateChange" 
-          size="medium" 
-          :picker-options="pickerOptions2" 
-          ref="picker2" 
-          v-model="pickerOptions2Date" 
-          type="daterange" 
-          range-separator="至" 
-          start-placeholder="开始日期" 
-          end-placeholder="结束日期" top="100">
-          </el-date-picker>
+          <el-date-picker
+            size="medium"
+            :picker-options="dateOptions"
+            ref="picker2"
+            v-model="rechargeTime"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            top="100"
+            :clearable="false"
+          ></el-date-picker>
         </div>
-      </section>
-      <div class="game-sel" style="padding-left:200px">
+      </div>
+      <div class="game-sel">
         <el-button-group class="group">
           <el-button size="medium">
             <span>游戏</span>
@@ -44,69 +45,106 @@
           </el-button>
         </el-button-group>
       </div>
-       <div class="system-sel" >
+      <!-- 系统 -->
+      <div class="system-sel">
         <el-button-group class="group">
           <el-button size="medium">
             <span>系统</span>
           </el-button>
-          <el-select @change="osChange" class="os" v-model="osOptions.os" size="medium" style="width: 100px;">
-            <el-option v-for="item in osOptions.list" :key="item.os" :label="item.txt" :value="item.os"></el-option>
+          <el-select
+            @change="osChange"
+            class="os"
+            v-model="osOptions.os"
+            size="medium"
+            style="width: 100px;"
+          >
+            <el-option
+              v-for="item in osOptions.list"
+              :key="item.os"
+              :label="item.txt"
+              :value="item.os"
+            ></el-option>
           </el-select>
         </el-button-group>
       </div>
+      <!-- 渠道 -->
       <div class="channel-sel">
         <el-button-group class="group">
           <el-button size="medium">
             <span>渠道</span>
           </el-button>
-          <el-select class="channel" filterable v-model="channelOptions.channel" size="medium" @change="channelChange(channelOptions.channel)">
-            <el-option v-for="item in _state.subChannelInfoData.channel" :key="item.media_source" :label="item.media_source" :value="item.media_source"></el-option>
+          <el-select
+            class="channel"
+            filterable
+            v-model="channelOptions.channel"
+            size="medium"
+            @change="channelChange(channelOptions.channel)"
+          >
+            <el-option
+              v-for="item in _state.subChannelInfoData.channel"
+              :key="item.media_source"
+              :label="item.media_source"
+              :value="item.media_source"
+            ></el-option>
           </el-select>
         </el-button-group>
       </div>
-
-      <div class="channel-sel">
+      <!-- 标签 -->
+      <div class="tag-sel">
         <el-button-group class="group">
           <el-button size="medium">
             <span>标签</span>
           </el-button>
-          <el-select class="channel" filterable v-model="channelOptions.in_site_type" size="medium" @change="changeChannelParams(channelOptions.in_site_type)">
-            <el-option v-for="item in _state.subChannelInfoData.params[channelIndex]" :key="item.in_site_type" :label="item.in_site_type" :value="item.in_site_type"></el-option>
+          <el-select class="channel" filterable v-model="channelOptions.in_site_type" size="medium">
+            <el-option
+              v-for="item in _state.subChannelInfoData.params[channelIndex]"
+              :key="item.in_site_type"
+              :label="item.in_site_type"
+              :value="item.in_site_type"
+            ></el-option>
           </el-select>
         </el-button-group>
       </div>
-
-      <div class="query" style="padding-left:50px">
-        <el-button type="info" @click="ckeck() && query()">
-          查询
-        </el-button>
+      <div class="query" >
+        <el-button type="info" @click="channelQuery(2)">查询</el-button>
       </div>
-       <div class="excel">
-        <el-button type="info" @click="ckeck() && excel()">
-          导出表格
-        </el-button>
+      <div class="excel">
+        <el-button type="info" @click="excel()">导出表格</el-button>
       </div>
-    </my-row>
+    </section>
     <my-row>
-    <tsdp :data="tsdp" v-if="tsdp.isShow" :auto-confirm="true"></tsdp>
-    </my-row>    
-      <pagination
-        v-if="$$subChannelData.length"
-        :total="$$subChannelData.length"
-        :page.sync="listQuery.page"
-        :limit.sync="listQuery.limit"
-        @pagination="cahngePage" 
-      />
-    <div class="subTable" v-if="__data" style="background: rgba(208,196,214,.5); margin: 12px; padding: 15px;">
-      <el-table  :data="subChannelDatas" :cell-class-name="cellClassName"   :width="'2000px'" :cell-style="addStyle">
-        <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key"  
-         :label="item.key" :formatter="formatter" :width="item.width" :min-width="item['min-width']" :sortable="item.sortable" v-if="!item.hide"
-         :fixed="i<=2?true:false"></el-table-column>
+      <tsdp :data="tsdp" v-if="tsdp.isShow" :auto-confirm="true"></tsdp>
+    </my-row>
+    <pagination
+      v-if="$$subChannelData.length"
+      :total="$$subChannelData.length"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="cahngePage"
+    />
+    <div class="subTable" style="background: rgba(208,196,214,.5); margin: 12px; padding: 15px;">
+      <el-table :data="subChannelDatas" :width="'2000px'" :cell-style="addStyle">
+        <el-table-column
+          v-for="(item, i) in _config.tableKey"
+          :key="i"
+          :prop="item.key"
+          :label="item.key"
+          :formatter="formatter"
+          :width="item.width"
+          :min-width="item['min-width']"
+          :sortable="item.sortable"
+          v-if="!item.hide"
+          :fixed="i<=2?true:false"
+        ></el-table-column>
         <div slot="append">
-          <totalFloat :updateHook="updateHook" :params="{
+          <totalFloat
+            v-if="__data"
+            :updateHook="updateHook"
+            :params="{
             total: __data.total,
             tableKey: _config.tableKey
-            }" />
+            }"
+          />
         </div>
       </el-table>
     </div>
@@ -117,27 +155,25 @@
 import tsdp from "src/component/widget/tree-degree-select-box/index.vue";
 import totalFloat from "src/component/widget/total-float/index.vue";
 import Pagination from 'src/components/Pagination/index.vue'
-// import { valid } from 'semver';
-import api from 'src/services/api'
-
-import { log } from 'util';
 export default {
   name: 'sub-channel-reports',
   components: {
-    tsdp, totalFloat,Pagination
+    tsdp, totalFloat, Pagination
   },
   data() {
     return {
       SMN: 'o_s_c_reports',
       updateHook: 0,
-      channelIndex:-1,
+      channelIndex: -1,
       tableOptions: {
         siteId: null
       },
-      pickerOptionsDate:null,
-      pickerOptions2Date:null,
+      // 报表数据
+      subChannelDatas: [],
+      activationTime: [],
+      rechargeTime: [],
       // 日期选择
-      pickerOptions: {
+      dateOptions: {
         onPick({ minDate, maxDate }) {
           if (!maxDate) {
             this._parentEl.querySelector("input").value = moment(
@@ -145,126 +181,62 @@ export default {
             ).format("YYYY-MM-DD");
           }
         },
-         shortcuts: [{
-            text: '今天',
-            onClick(picker) {
-              picker.dateShortcuts('今天', picker)
-            }
-          }, {
-            text: '昨天',
-            onClick(picker) {
-              picker.dateShortcuts('昨天', picker)
-            }
-          }, {
-            text: '近7天',
-            onClick(picker) {
-              picker.dateShortcuts('近7天', picker)
-            }
-          }, {
-            text: '近15天',
-            onClick(picker) {
-              picker.dateShortcuts('近15天', picker)
-            }
-          }, {
-            text: '近30天',
-            onClick(picker) {
-              picker.dateShortcuts('近30天', picker)
-            }
-          }, {
-            text: '近30-60天',
-            onClick(picker) {
-              picker.dateShortcuts('近30-60天', picker)
-            }
-          }, {
-            text: '本月',
-            onClick(picker) {
-              picker.dateShortcuts('本月', picker)
-            }
-          }, {
-            text: '上月',
-            onClick(picker) {
-              picker.dateShortcuts('上月', picker)
-            }
-          }, {
-            text: '今年',
-            onClick(picker) {
-              picker.dateShortcuts('今年', picker)
-            }
-          }, {
-            text: '去年',
-            onClick(picker) {
-              picker.dateShortcuts('去年', picker)
-            }
-          }],
-        date: null
-      },
-       // 日期选择
-      pickerOptions2: {
-        onPick({ minDate, maxDate }) {
-          if (!maxDate) {
-            this._parentEl.querySelector("input").value = moment(
-              minDate
-            ).format("YYYY-MM-DD");
+        shortcuts: [{
+          text: '今天',
+          onClick(picker) {
+            picker.dateShortcuts('今天', picker)
           }
-        },
-         shortcuts: [{
-            text: '今天',
-            onClick(picker) {
-              picker.dateShortcuts('今天', picker)
-            }
-          }, {
-            text: '昨天',
-            onClick(picker) {
-              picker.dateShortcuts('昨天', picker)
-            }
-          }, {
-            text: '近7天',
-            onClick(picker) {
-              picker.dateShortcuts('近7天', picker)
-            }
-          }, {
-            text: '近15天',
-            onClick(picker) {
-              picker.dateShortcuts('近15天', picker)
-            }
-          }, {
-            text: '近30天',
-            onClick(picker) {
-              picker.dateShortcuts('近30天', picker)
-            }
-          }, {
-            text: '近30-60天',
-            onClick(picker) {
-              picker.dateShortcuts('近30-60天', picker)
-            }
-          }, {
-            text: '本月',
-            onClick(picker) {
-              picker.dateShortcuts('本月', picker)
-            }
-          }, {
-            text: '上月',
-            onClick(picker) {
-              picker.dateShortcuts('上月', picker)
-            }
-          }, {
-            text: '今年',
-            onClick(picker) {
-              picker.dateShortcuts('今年', picker)
-            }
-          }, {
-            text: '去年',
-            onClick(picker) {
-              picker.dateShortcuts('去年', picker)
-            }
-          }],
+        }, {
+          text: '昨天',
+          onClick(picker) {
+            picker.dateShortcuts('昨天', picker)
+          }
+        }, {
+          text: '近7天',
+          onClick(picker) {
+            picker.dateShortcuts('近7天', picker)
+          }
+        }, {
+          text: '近15天',
+          onClick(picker) {
+            picker.dateShortcuts('近15天', picker)
+          }
+        }, {
+          text: '近30天',
+          onClick(picker) {
+            picker.dateShortcuts('近30天', picker)
+          }
+        }, {
+          text: '近30-60天',
+          onClick(picker) {
+            picker.dateShortcuts('近30-60天', picker)
+          }
+        }, {
+          text: '本月',
+          onClick(picker) {
+            picker.dateShortcuts('本月', picker)
+          }
+        }, {
+          text: '上月',
+          onClick(picker) {
+            picker.dateShortcuts('上月', picker)
+          }
+        }, {
+          text: '今年',
+          onClick(picker) {
+            picker.dateShortcuts('今年', picker)
+          }
+        }, {
+          text: '去年',
+          onClick(picker) {
+            picker.dateShortcuts('去年', picker)
+          }
+        }],
         date: null
       },
-
       // 系统选择
-
       osOptions: {
-        os: null,
+        os: "0",
         list: [{
           os: "0",
           txt: "IOS"
@@ -273,7 +245,7 @@ export default {
           txt: "安卓"
         }]
       },
-
+      // 游戏选择
       tsdp: {
         allTxt: "全部（国家/地区）",
         isShow: false,
@@ -283,19 +255,13 @@ export default {
         gameArr: [],
         callback: this.tsdpCb
       },
-
-      // level query
-      levelOptions: {
-        level: null
-      },
-
+      // 渠道选择
       channelOptions: {
-        in_site_type:null,
+        in_site_type: null,
         channel: null,
         list: []
       },
-
-      subChannelDatas:[],
+      // 分页参数
       listQuery: {
         page: 1,
         limit: 10
@@ -307,13 +273,8 @@ export default {
     _state() {
       return this.$store.state[this.SMN];
     },
-    $$subChannelData(){
-      if (this.$store.state[this.SMN].subChannelData) {
-        this.subChannelDatas = this.$store.state[this.SMN].subChannelData.slice(0,this.listQuery.limit)
-        return this.$store.state[this.SMN].subChannelData
-      }else{
-        return []        
-      }
+    $$subChannelData() {
+      return this.$store.state[this.SMN].subChannelData
     },
     __data() {
       this.updateHook += 1
@@ -328,44 +289,36 @@ export default {
       }
       return this._state.subChannelConfig
     },
-    watchGame() {
-      return this.osOptions.os;
-    }
   },
   watch: {
-    pickerOptionsDate(newValue,oldValue){
+    activationTime(newValue, oldValue) {
       var date = newValue.map(item => moment(item).format("YYYY-MM-DD"));
-      if(new Date(date[0]).getTime()>new Date(this.pickerOptions2Date[1]).getTime()){
-        this.pickerOptionsDate = oldValue;
+      if (new Date(date[0]).getTime() > new Date(this.rechargeTime[1]).getTime()) {
         return Utils.Notification.error({ message: '激活开始时间大于充值结束时间,请重新选择' });
       }else{
-        this.$store.commit(this.SMN + '/setDate', date)
-        this.pickerOptions2Date = [date[0],this.pickerOptions2Date[1]]
-        this.channelQuery()
+        this.$store.commit(this.SMN + '/setActivationTime', date)
+        this.rechargeTime = [date[0],this.rechargeTime[1]]
       }
     },
-    pickerOptions2Date(newValue,oldValue){
-       var date = newValue.map(item => {
-        if(typeof item === 'string'){
+    rechargeTime(newValue, oldValue) {
+      var date = newValue.map(item => {
+      if (typeof item === 'string') {
           return item
         }
         return moment(item).format("YYYY-MM-DD")
       });
-      this.$store.commit(this.SMN + '/setPayDate', date)
+      this.$store.commit(this.SMN + '/setRechargeTime', date)
     },
-    watchGame(newValue,oldValue){
-      this.channelOptions.channel = null
-      this.channelOptions.in_site_type = null
-      this.channelQuery();
-    }
   },
   methods: {
-    cahngePage(data){
-        this.subChannelDatas = this.$$subChannelData.slice((data.page-1)*this.listQuery.limit,this.listQuery.limit*data.page)
+    //修改分页表格下标
+    cahngePage(data) {
+      this.subChannelDatas = this.$$subChannelData.slice((data.page - 1) * this.listQuery.limit, this.listQuery.limit * data.page)
     },
+    // 导出表格
     excel() {
       var thead = document.querySelector('.el-table__header thead').innerHTML
-      var tbody = document.querySelector('.el-table__body tbody').innerHTML+document.querySelector('.el-table__append-wrapper tbody').innerHTML
+      var tbody = document.querySelector('.el-table__body tbody').innerHTML + document.querySelector('.el-table__append-wrapper tbody').innerHTML
       var table = document.createElement('table')
       table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
       Utils.tableToExcel(
@@ -373,104 +326,67 @@ export default {
         false,
         new Date().getTime() + '.xls'
       )
-      // var params = {
-      //   in_install_date1:this._state.date[0],
-      //   in_install_date2:this._state.date[1],
-      //   in_pay_date1: this._state.payDate[0],
-      //   in_pay_date2: this._state.payDate[1],
-      //   in_os: this._state.os,
-      //   in_area_app_ids: this._state.gameArr[0],
-      //   in_media_source: this._state.channel,
-      //   dataview: 'fn_report_media_source_site',
-      // }
-      // api.user.exportData(params)
     },
-    cellClassName({ row, column, rowIndex, columnIndex }) {
-      if (!columnIndex) {
-        if (!this.tableOptions.siteId)
-          return 'ellipsis sub-channel'
-      }
-    },
+    // 切换游戏回调事件
     tsdpCb([region, regionArr, game, gameArr]) {
+      this.tsdp.isShow = !this.tsdp.isShow
       this.tsdp.region = region;
       this.tsdp.regionArr = regionArr;
       this.tsdp.game = game;
       this.tsdp.gameArr = gameArr;
+      // 
       this.channelOptions.channel = null
       this.channelOptions.in_site_type = null
-      this.channelQuery();
+
+      this.channelQuery(1);
     },
-    dateChange(value) {
-      // var arr = []
-      // value.forEach(date => {
-      //   arr.push(moment(date).format("YYYY-MM-DD"))
-      // })
-      // this.$store.commit(this.SMN + '/setDate', arr)
+    // 切换系统回调事件
+    osChange() {
+      this.channelOptions.channel = null
+      this.channelOptions.in_site_type = null
+      this.channelQuery(1);
     },
-    payDateChange(value){
-      // var arr = []
-      // value.forEach(date => {
-      //   arr.push(moment(date).format("YYYY-MM-DD"))
-      // })
-      // this.$store.commit(this.SMN + '/setPayDate', arr)
-    },
-    osChange(value) {
-      this.$store.commit(this.SMN + '/setOs', value)
-    },
+    // 切换渠道回调事件
     channelChange(value) {
       this.channelOptions.in_site_type = null;
-      this.channelIndex = this._state.subChannelInfoData.channel.filter((val)=> val.media_source == value)[0].index;
+      this.channelIndex = this._state.subChannelInfoData.channel.filter((val) => val.media_source == value)[0].index;
     },
-    changeChannelParams(value){
-    },
-    levelChange(value) {
-      var number = parseInt(value)
-      this.levelOptions.level = isNaN(number) ? null : number
-      this.$store.commit(this.SMN + '/setLevel', this.levelOptions.level * 1)
-    },
-    formatter(row, column, value) {
-      var {
-        index, keys
-      } = this._config
-      var {
-        label
-      } = column
-      if (
-        label === keys[index.registerRateIndex]
-        || label === keys[index.createRateIndex]
-        || label === keys[index.roiIndex]
-        || label === keys[index.minuteIndex]   
-        || label === keys[index.keep1Index]
-        || label === keys[index.keep2Index]
-        || label === keys[index.keep3Index]     
-      ) {
-        value += '%'
-      } 
-      return value
-    },
-    cellClick(row, column, cell, event) {
-      if (cell.classList.contains('sub-channel') && !this.tableOptions.siteId) {
+    // 渠道查询函数
+    channelQuery(queryType) {
+      if (this.ckeck(queryType)) {
         var param = {
-          begin_date: this._state.date[0],
-          end_date: this._state.date[1],
-          os: this._state.os,
-          game_id: this._state.gameArr[0],
-          media_source: this._state.channel,
-          site_id: row[column.label],
-          level: this._state.level,
+          in_install_date1: this._state.activationTime[0],
+          in_install_date2: this._state.activationTime[1],
+          in_pay_date1: this._state.rechargeTime[0],
+          in_pay_date2: this._state.rechargeTime[1],
+          in_os: this.osOptions.os,
+          in_area_app_ids: this.tsdp.gameArr[0],
+          in_media_source: this.channelOptions.channel,
+          in_site_type: this.channelOptions.in_site_type,
+          in_query_type: queryType, //queryType:1查询渠道  2:查询表格data 
         }
-        this.$store.dispatch(this.SMN + '/subChannelRegionData', param).then(data => {
-          this.tableOptions.siteId = param.site_id
-        })
+        this.$store.dispatch(this.SMN + '/subChannelData', param).then((newValue) => {
+          if (queryType == 2) {
+            var subChannelParams = {
+              systemIndex: this.osOptions.os,
+              channelIndex: this.channelOptions.channel,
+              tagIndex: this.channelOptions.in_site_type,
+              tsdp: this.tsdp,
+            }
+            this.subChannelDatas = newValue.slice(0, this.listQuery.limit)
+            this.$store.commit(this.SMN + '/setChannelParams', subChannelParams)
+          }
+        });
       }
     },
-    channelQuery() {
+    // 查询参数验证事件
+    ckeck(queryType) {
       if (!this.osOptions.os) {
         this.$notify({
           type: "warning",
           message: "请选择操作系统"
         });
-        return;
+        return false;
       }
       if (!this.tsdp.gameArr[0]) {
         this.$notify({
@@ -478,62 +394,29 @@ export default {
           message: "请选择游戏",
           offset: 50
         });
-        return;
+        return false;
       }
-
-      this.$store.commit(this.SMN + "/setRegion", this.tsdp.region);
-      this.$store.commit(this.SMN + "/setRegionArr", this.tsdp.regionArr);
-      this.$store.commit(this.SMN + "/setGame", this.tsdp.game);
-      this.$store.commit(this.SMN + "/setGameArr", this.tsdp.gameArr);
-      var param = {
-        in_install_date1:this._state.date[0],
-        in_install_date2:this._state.date[1],
-        in_pay_date1: this._state.payDate[0],
-        in_pay_date2: this._state.payDate[1],
-        in_os: this._state.os,
-        in_area_app_ids: this._state.gameArr[0],
-        in_media_source: this._state.channel,
-        in_site_type:this.channelOptions.in_site_type,
-        in_query_type:1
-      }
-      this.$store.dispatch(this.SMN + '/subChannelInfo', param)
-    },
-    ckeck() {
-      if (!this._state.gameArr.length) {
+      if (!this.channelOptions.channel && queryType == 2) {
         this.$notify({
           type: "warning",
-          message: "请选择游戏"
-        })
-        return false
+          message: "请选择渠道",
+          offset: 50
+        });
+        return false;
       }
-      if (!this.channelOptions.channel) {
+      if (!this.channelOptions.in_site_type && queryType == 2) {
         this.$notify({
           type: "warning",
-          message: "请选择渠道"
-        })
-        return false
+          message: "请选择标签",
+          offset: 50
+        });
+        return false;
       }
       return true
     },
-    query() {
-      var param = {
-        in_install_date1:this._state.date[0],
-        in_install_date2:this._state.date[1],
-        in_pay_date1: this._state.payDate[0],
-        in_pay_date2: this._state.payDate[1],
-        in_os: this._state.os,
-        in_area_app_ids: this._state.gameArr[0],
-        in_media_source: this.channelOptions.channel,
-        in_site_type:this.channelOptions.in_site_type,
-        in_query_type:2
-      }
-      this.$store.commit(this.SMN + '/setChannel', this.channelOptions.channel)
-      this.$store.commit(this.SMN + '/setChannelParams', this.channelOptions.in_site_type)
-      this.$store.dispatch(this.SMN + '/subChannelData', param)
-
-    },
+    // 表格宽度初始化
     getWidth(str) {
-      var len = str ? str.length:0;
+      var len = str ? str.length : 0;
       if (len <= 2) {
         return 80
       }
@@ -550,6 +433,28 @@ export default {
         return 120
       }
     },
+    // 表格样式格式化
+    formatter(row, column, value) {
+      var {
+        index, keys
+      } = this._config
+      var {
+        label
+      } = column
+      if (
+        label === keys[index.registerRateIndex]
+        || label === keys[index.createRateIndex]
+        || label === keys[index.roiIndex]
+        || label === keys[index.minuteIndex]
+        || label === keys[index.keep1Index]
+        || label === keys[index.keep2Index]
+        || label === keys[index.keep3Index]
+      ) {
+        value += '%'
+      }
+      return value
+    },
+    // 表格行内样式
     addStyle({ row, column, rowIndex, columnIndex }) {
       function r2g(value, avg) {
         var percent = value;
@@ -614,6 +519,7 @@ export default {
           break;
       }
     },
+    // 日期方法
     dateShortcuts(txt, picker) {
       var date
       switch (txt) {
@@ -686,30 +592,35 @@ export default {
       }
       picker.$emit('pick', date);
     },
+    // 参数初始化
+    dataInit() {
+      var picker = this.$refs.picker
+      picker.mountPicker();
+      picker.picker._parentEl = picker.$el;
+      picker.picker.dateShortcuts = this.dateShortcuts
+      var picker2 = this.$refs.picker2
+      picker2.mountPicker();
+      picker2.picker._parentEl = picker2.$el;
+      picker2.picker.dateShortcuts = this.dateShortcuts
+      this.rechargeTime = this._state.rechargeTime;
+      this.activationTime = this._state.activationTime;
+      if (this._state.subChannelParams) {
+        this.osOptions.os = this._state.subChannelParams.systemIndex;
+        this.channelOptions.channel = this._state.subChannelParams.channelIndex;
+        this.channelOptions.in_site_type = this._state.subChannelParams.tagIndex;
+        this.tsdp.region = this._state.subChannelParams.tsdp.region;
+        this.tsdp.regionArr = this._state.subChannelParams.tsdp.regionArr;
+        this.tsdp.game = this._state.subChannelParams.tsdp.game;
+        this.tsdp.gameArr = this._state.subChannelParams.tsdp.gameArr;
+        this.subChannelDatas = this._state.subChannelData.slice(0, this.listQuery.limit)
+      }
+    }
   },
   mounted() {
-    var picker = this.$refs.picker
-    picker.mountPicker();
-    picker.picker._parentEl = picker.$el;
-    picker.picker.dateShortcuts = this.dateShortcuts
-
-    var picker2 = this.$refs.picker2
-    picker2.mountPicker();
-    picker2.picker._parentEl = picker2.$el;
-    picker2.picker.dateShortcuts = this.dateShortcuts
+    this.dataInit()
   },
   created() {
-    this.pickerOptionsDate = this._state.date
-    this.pickerOptions2Date = this._state.payDate
-    this.osOptions.os = this._state.os
-    this.levelOptions.level = this._state.level
-    if (this._state.region) this.tsdp.region = this._state.region
-    if (this._state.regionArr) this.tsdp.regionArr = this._state.regionArr
-    if (this._state.game) this.tsdp.game = this._state.game
-    if (this._state.gameArr) this.tsdp.gameArr = this._state.gameArr
-    if (this._state.channel) this.channelOptions.channel = this._state.channel
-    if (this._state.channelList) {this.channelOptions.list = this._state.channelList;}
-    if(!this.channelOptions.in_site_type){this.channelOptions.in_site_type = this._state.setChannelParamsName }
+    // 获取游戏列表
     this.$store.dispatch("overseas_common/getList1").then(item => {
       if (!this._state.region || !this._state.regionArr.length) {
         this.$store.commit(this.SMN + "/setRegion", this.tsdp.allTxt);
@@ -721,8 +632,6 @@ export default {
         this.tsdp.regionArr = this.$store.state.overseas_common.list1All;
       }
     })
-
-
   }
 }
 </script>
@@ -736,17 +645,11 @@ export default {
       white-space: nowrap;
     }
   }
-  .sub-channel {
-    // cursor: pointer;
-    // &:hover {
-    //   background: #5b5691 !important;
-    //   color: #fff;
-    // }
-  }
   .time-picker,
   .system-sel,
   .game-sel,
   .channel-sel,
+  .tag-sel
   .query,
   .excel {
     margin-left: 10px;
@@ -760,13 +663,19 @@ export default {
       margin-left: -16px;
     }
   }
-.selection-box {
-    position: relative;
-    .dateTime{
-      position: absolute;
-      top: -55px;
-      left: 200px;
-      display: flex;
+  .selection-box {
+    padding-left: 200px;
+    width: 99%;
+    height: auto;
+    margin-top: -55px;
+    .dateTime {
+      width: 100%;
+      height: auto;
+      display: inline-block;
+      .time-picker{
+        float: left;
+        margin: 5px 5px 5px 5px;
+      }
     }
   }
   .channel {
@@ -776,18 +685,25 @@ export default {
 
   .system-sel,
   .game-sel,
-  .channel-sel {
-    .group {
-      display: flex;
-      flex-wrap: nowrap;
+  .channel-sel,
+  .tag-sel,
+  .query,
+  .excel {
+    float: left;
+    margin: 5px 5px 5px 5px;
+  }
+  .query,
+  .excel{
+    button{
+      padding: 10px 20px;
     }
   }
 }
 .el-table {
-  th,td{
+  th,
+  td {
     padding-left: 0;
-    padding-right: 0
-
+    padding-right: 0;
   }
   tr:first-child {
     th {

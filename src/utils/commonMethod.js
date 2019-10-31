@@ -65,8 +65,6 @@ const changeGame = () => {
     gameId: store.state.common.nowgame
   }).then(data => {
     if (data.code == 303) {
-      console.log(store.state.common);
-      
       Promise.all([
         // 
         new Promise((resolve, reject) => {

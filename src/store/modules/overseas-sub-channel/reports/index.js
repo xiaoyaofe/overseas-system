@@ -21,22 +21,24 @@ function getWidth(str) {
 export default {
   namespaced: true,
   state: {
-    date: [
-      moment()
-        .add(-1, "day")
-        .format("YYYY-MM-DD"),
-      moment()
-        .add(-1, "day")
-        .format("YYYY-MM-DD")
-    ],
-    payDate:[
-      moment()
-        .add(-1, "day")
-        .format("YYYY-MM-DD"),
-      moment()
-        .add(-1, "day")
-        .format("YYYY-MM-DD")
-    ],
+    activationTime: [moment().add(-1, "day").format("YYYY-MM-DD"), moment().add(-1, "day").format("YYYY-MM-DD")],
+    rechargeTime: [moment().add(-1, "day").format("YYYY-MM-DD"), moment().add(-1, "day").format("YYYY-MM-DD")],
+    // date: [
+    //   moment()
+    //     .add(-1, "day")
+    //     .format("YYYY-MM-DD"),
+    //   moment()
+    //     .add(-1, "day")
+    //     .format("YYYY-MM-DD")
+    // ],
+    // payDate:[
+    //   moment()
+    //     .add(-1, "day")
+    //     .format("YYYY-MM-DD"),
+    //   moment()
+    //     .add(-1, "day")
+    //     .format("YYYY-MM-DD")
+    // ],
     os: '1',
     region: null,
     regionArr: [],
@@ -45,9 +47,9 @@ export default {
     channel: null,
     channelList: null,
     level: 3,
-    subChannelData: null,
+    subChannelData: [],
     subChannelInfoData:{channel:[],params:[]},
-    setChannelParamsName:null,
+    subChannelParams:null,
     subChannelRegionData: null,
     subChannelConfig: {},
     subChannelRegionConfig: {}
@@ -56,11 +58,11 @@ export default {
     setOs(state, data) {
       state.os = data
     },
-    setDate(state, data) {
-      state.date = data
+    setActivationTime(state, data) {
+      state.activationTime = data
     },
-    setPayDate(state, data) {
-      state.payDate = data
+    setRechargeTime(state, data) {
+      state.rechargeTime = data
     },
     setRegion(state, data) {
       state.region = data
@@ -78,7 +80,7 @@ export default {
       state.channel = data
     },
     setChannelParams(state,data){
-      state.setChannelParamsName = data
+      state.subChannelParams = data
     },
     setChannelList(state, data) {
       state.channelList = data
@@ -743,7 +745,6 @@ export default {
          
         data.list = state.subChannelRegionData
         data.total = total
-        console.log('subChannelRegionData', data)
         return data
       } else {
         return null
@@ -764,37 +765,21 @@ export default {
       var url = '/query/' + 'fn_report_media_source_site'
       return new Promise((resolve) => {
         http.post(url, params).then(data => {
-          if (data.code === 401) {
+          if (data.code === 401 && params.in_query_type ===2) {
             var kv = {
               key: 'subChannelData',
               value: data.state[0]
             }
             commit('set', kv)
-          }
-        })
-      })
-
-    },
-    subChannelInfo(context, params) {
-      var {
-        commit,
-        state,
-        dispatch,
-        getters,
-        rootGetters,
-        rootState,
-      } = context
-
-      var url = '/query/' + 'fn_report_media_source_site'
-      return new Promise((resolve) => {
-        http.post(url, params).then(data => {
-          if (data.code === 401) {
+            resolve(state.subChannelData);
+          }else if(data.code === 401 && params.in_query_type ===1){
             var channelData = {channel:[],params:[]}
             for (let index = 0; index < data.state[0].length; index++) {
               channelData.channel.push({index:index,media_source:data.state[0][index].media_source})
               channelData.params.push(data.state[0][index].in_site_type.split(',').map((val)=>({in_site_type:val})))
-            }
+            }            
             commit('setSubChannelInfo', channelData)
+            resolve();
           }
         })
       })
