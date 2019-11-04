@@ -1,6 +1,5 @@
 <template>
   <div v-if="$$data">
-    <!-- <div class="chart-area" ref="chart"></div> -->
     <div class="table-item">
       <el-table :default-sort="{prop: _config.keys[_config.index.dateIndex], order: $data.$_order}" :data="$$data.list" :cell-style="addStyle">
         <el-table-column v-for="(item, i) in _config.tableKey" :key="i"  :fixed="i<=2?true:false"  :prop="item.key" :label="item.key" :sortable="item.sortable" :width="item.width" :formatter="formatter" v-if="!item.hide"></el-table-column>
@@ -33,13 +32,7 @@ export default {
   },
   computed: {
     $$data() {
-      var _ = this.$store.getters['o_r_delivery/getDaily']
-      if (_) {
-        this.$nextTick(() => {
-          // this.createChart()
-        })
-      }
-      return _
+      return this.$store.getters['o_r_delivery/getDaily']
     }
   },
   methods: {
@@ -61,23 +54,7 @@ export default {
       ) {
         value += '%'
       }
-      //  {
-      //   value = (value  * 100).format(2) + '%';
-      //   // value = (value / row[keys[index.activeIndex]] * 100).format(2) + '%';
-      // }
       return value
-    },
-    createChart() {
-      var serials = (() => {
-        return this._config.chartKey.map(key => {
-          var data = this.$$data.date.map((date, i) => {
-            return this.$$data.list[i][key]
-          })
-          return { name: key, data: data }
-        })
-      })()
-      highchartUtil.drawChart(this.$refs.chart, 'column', this.$$data.date, serials)
-      this.$data.$_chartIsReady = Math.random()
     },
     addStyle({ row, column, rowIndex, columnIndex }) {
       function r2g(value, avg) {

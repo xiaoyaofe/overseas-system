@@ -8,9 +8,9 @@
           <span>激活时间</span>
           <el-date-picker
             size="medium"
-            :picker-options="pickerOptions1"
+            :picker-options="dateOptions"
             ref="picker1"
-            v-model="date"
+            v-model="activationTime"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -22,9 +22,9 @@
           <span>充值时间</span>
           <el-date-picker
             size="medium"
-            :picker-options="pickerOptions2"
+            :picker-options="dateOptions"
             ref="picker2"
-            v-model="payDate"
+            v-model="rechargeTime"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -35,21 +35,26 @@
       </section>
       <!-- 游戏 -->
       <section style="padding-left:165px">
-        <el-button size="medium" class="selection" @click="data.isShow=true">
+        <el-button size="medium" class="selection" @click="tsdp.isShow=true">
           <span>已选择：</span>
           <span>{{_rcg}}</span>
         </el-button>
-      </section>   
+      </section>
       <!-- 系统 -->
-      <div class="date-box-item" v-show="!data.game">
+      <div class="date-box-item" v-show="!tsdp.game">
         <span style="min-width:40px">系统</span>
         <el-select class="os" v-model="os" size="medium">
-          <el-option v-for="item in options" :key="item.value" :label="item.txt" :value="item.os"></el-option>
+          <el-option
+            v-for="item in systemOptions"
+            :key="item.value"
+            :label="item.txt"
+            :value="item.os"
+          ></el-option>
         </el-select>
       </div>
       <!-- 查询按钮 -->
       <el-button
-         type="info"
+        type="info"
         size="medium"
         class="search"
         @click="getData(taging_,false)"
@@ -60,7 +65,7 @@
       <div style="position:relative;">
         <el-date-picker
           ref="picker"
-          v-model="value2"
+          v-model="emailParams"
           align="right"
           type="date"
           style="position:absolute;z-index:-1;width:200px;left:24px;visibility:hidden;"
@@ -72,10 +77,10 @@
     </my-row>
     <!-- 游戏下拉框 -->
     <my-row>
-      <tsdp :data="data" v-if="data.isShow"></tsdp>
+      <tsdp :data="tsdp" v-if="tsdp.isShow"></tsdp>
     </my-row>
     <my-row>
-      <el-tabs v-model="taging" @tab-click="tagClick(false)" style="marginTop:35px">
+      <el-tabs v-model="tagComponentName" @tab-click="tagClick(false)" style="marginTop:35px">
         <el-tab-pane
           v-if="(isSingle && _tagState[tag])"
           v-for="({ label }, tag) in tags"
@@ -84,173 +89,47 @@
           :name="tag"
         ></el-tab-pane>
         <!-- 动态组件 -->
-        <component :is="main" :data="data" :_config="_config" :_types="$data.types"></component>
+        <component :is="main" :data="tsdp" :_config="_config" :_types="types"></component>
       </el-tabs>
     </my-row>
   </div>
 </template>
 
 <script>
-import tsdp from "src/component/widget/tree-degree-select-box/index.vue";
 import api from "src/services/api";
 import http from "src/services/http";
-// 综合报表
-import comprehensive from "./comprehensive.vue";
 // 每日报表
 import daily from "./daily.vue";
-import zone from "./zone.vue";
 // 渠道报表
 import channel from "./channel.vue";
-// 系统对比
-import system from "./system.vue";
-// 单一游戏
-import singleGame from './singleGame.vue'
-
-import MailCreation from "src/views/modules/MailCreation";
+// 综合报表
+import comprehensive from "./comprehensive.vue";
+// 选择游戏
+import tsdp from "src/component/widget/tree-degree-select-box/index.vue";
 export default {
   name: "reports-market",
   components: {
     tsdp,
     comprehensive,
     daily,
-    zone,
     channel,
-    system,
-    MailCreation,
-    singleGame
   },
   data() {
     return {
+      os: "0,1",
+      main: "comprehensive",
+      tags_: null,
+      taging_: null,
       isSingle: true,
       mailDate: null,
       in_rpt_type: 1,
       in_view_type: 0,
       in_chart_type: 1,
-      pickerOptions1: {
-        onPick({ minDate, maxDate }) {
-          if (!maxDate) {
-            this._parentEl.querySelector("input").value = moment(
-              minDate
-            ).format("YYYY-MM-DD");
-          }
-        },
-        shortcuts: [{
-          text: '今天',
-          onClick(picker) {
-            picker.dateShortcuts('今天', picker)
-          }
-        }, {
-          text: '昨天',
-          onClick(picker) {
-            picker.dateShortcuts('昨天', picker)
-          }
-        }, {
-          text: '近7天',
-          onClick(picker) {
-            picker.dateShortcuts('近7天', picker)
-          }
-        }, {
-          text: '近15天',
-          onClick(picker) {
-            picker.dateShortcuts('近15天', picker)
-          }
-        }, {
-          text: '近30天',
-          onClick(picker) {
-            picker.dateShortcuts('近30天', picker)
-          }
-        }, {
-          text: '近30-60天',
-          onClick(picker) {
-            picker.dateShortcuts('近30-60天', picker)
-          }
-        }, {
-          text: '本月',
-          onClick(picker) {
-            picker.dateShortcuts('本月', picker)
-          }
-        }, {
-          text: '上月',
-          onClick(picker) {
-            picker.dateShortcuts('上月', picker)
-          }
-        }, {
-          text: '今年',
-          onClick(picker) {
-            picker.dateShortcuts('今年', picker)
-          }
-        }, {
-          text: '去年',
-          onClick(picker) {
-            picker.dateShortcuts('去年', picker)
-          }
-        }]
-
-      },
-      pickerOptions2: {
-        onPick({ minDate, maxDate }) {
-          if (!maxDate) {
-            this._parentEl.querySelector("input").value = moment(
-              minDate
-            ).format("YYYY-MM-DD");
-          }
-        },
-        shortcuts: [{
-          text: '今天',
-          onClick(picker) {
-            picker.dateShortcuts('今天', picker)
-          }
-        }, {
-          text: '昨天',
-          onClick(picker) {
-            picker.dateShortcuts('昨天', picker)
-          }
-        }, {
-          text: '近7天',
-          onClick(picker) {
-            picker.dateShortcuts('近7天', picker)
-          }
-        }, {
-          text: '近15天',
-          onClick(picker) {
-            picker.dateShortcuts('近15天', picker)
-          }
-        }, {
-          text: '近30天',
-          onClick(picker) {
-            picker.dateShortcuts('近30天', picker)
-          }
-        }, {
-          text: '近30-60天',
-          onClick(picker) {
-            picker.dateShortcuts('近30-60天', picker)
-          }
-        }, {
-          text: '本月',
-          onClick(picker) {
-            picker.dateShortcuts('本月', picker)
-          }
-        }, {
-          text: '上月',
-          onClick(picker) {
-            picker.dateShortcuts('上月', picker)
-          }
-        }, {
-          text: '今年',
-          onClick(picker) {
-            picker.dateShortcuts('今年', picker)
-          }
-        }, {
-          text: '去年',
-          onClick(picker) {
-            picker.dateShortcuts('去年', picker)
-          }
-        }]
-
-      },
-      value2: null,
-      main: null,
-      data: {
+      emailParams: null,
+      rechargeTime: null,
+      activationTime: null,
+      tagComponentName: "comprehensive",
+      tsdp: {
         allTxt: "全部",
         isShow: false,
         callback: this.setRcg,
@@ -259,10 +138,68 @@ export default {
         game: null,             //游戏名
         gameArr: []
       },
-      date: null,
-      payDate:null,
-      os: null,
-      options: [
+      dateOptions: {
+        onPick({ minDate, maxDate }) {
+          if (!maxDate) {
+            this._parentEl.querySelector("input").value = moment(
+              minDate
+            ).format("YYYY-MM-DD");
+          }
+        },
+        shortcuts: [{
+          text: '今天',
+          onClick(picker) {
+            picker.dateShortcuts('今天', picker)
+          }
+        }, {
+          text: '昨天',
+          onClick(picker) {
+            picker.dateShortcuts('昨天', picker)
+          }
+        }, {
+          text: '近7天',
+          onClick(picker) {
+            picker.dateShortcuts('近7天', picker)
+          }
+        }, {
+          text: '近15天',
+          onClick(picker) {
+            picker.dateShortcuts('近15天', picker)
+          }
+        }, {
+          text: '近30天',
+          onClick(picker) {
+            picker.dateShortcuts('近30天', picker)
+          }
+        }, {
+          text: '近30-60天',
+          onClick(picker) {
+            picker.dateShortcuts('近30-60天', picker)
+          }
+        }, {
+          text: '本月',
+          onClick(picker) {
+            picker.dateShortcuts('本月', picker)
+          }
+        }, {
+          text: '上月',
+          onClick(picker) {
+            picker.dateShortcuts('上月', picker)
+          }
+        }, {
+          text: '今年',
+          onClick(picker) {
+            picker.dateShortcuts('今年', picker)
+          }
+        }, {
+          text: '去年',
+          onClick(picker) {
+            picker.dateShortcuts('去年', picker)
+          }
+        }]
+
+      },
+      systemOptions: [
         {
           os: "0,1",
           txt: "全部"
@@ -276,7 +213,6 @@ export default {
           txt: "安卓"
         }
       ],
-      taging: null,
       tags: {
         comprehensive: {
           label: "综合报表",
@@ -290,17 +226,8 @@ export default {
           label: "渠道报表",
           tag: "channel"
         },
-        zone: {
-          label: "地区报表",
-          tag: "zone"
-        },
-        system: {
-          label: "系统对比",
-          tag: "system"
-        }
+
       },
-      tags_: null,
-      taging_: null,
       types: {
         list: 1,
         comprehensive: 2,
@@ -328,7 +255,7 @@ export default {
     },
     _rcg() {
       var str = "";
-      var { regionArr, region, gameArr, game } = this.data;
+      var { regionArr, region, gameArr, game } = this.tsdp;
       var arr = [];
       if (regionArr.length) {
         str += region;
@@ -369,7 +296,6 @@ export default {
         }
         this.$data.tags_ = arr;
         // this.$data.taging_ = arr[0].tag;
-        console.log()
         if (Boolean(game)) {
           this.$data.taging_ = arr[1].tag;
         } else {
@@ -380,9 +306,9 @@ export default {
     },
     _rcg_() {
       var arr = [];
-      var lastQueryParam = this._state.lastQueryParam[this.taging];
+      var lastQueryParam = this._state.lastQueryParam[this.tagComponentName];
       if (lastQueryParam) {
-        var { in_os, gameIds, in_install_date1, in_install_date2,in_pay_date1,in_pay_date2, in_rpt_type } = lastQueryParam;
+        var { in_os, gameIds, in_install_date1, in_install_date2, in_pay_date1, in_pay_date2, in_rpt_type } = lastQueryParam;
         var str = "";
         if (this.$store.getters["overseas_common/getList1"].hasOwnProperty(gameIds)) {
           if (this._state.region) {
@@ -398,7 +324,7 @@ export default {
           "（系统）" + this.types.os[in_os],
           in_install_date1 + " 至 " + in_install_date2,
           in_pay_date1 + " 至 " + in_pay_date2,
-          "（国家/地区）" + (str || this.data.allTxt),
+          "（国家/地区）" + (str || this.tsdp.allTxt),
           this.tags[this.types[in_rpt_type]].label
         ];
       }
@@ -408,52 +334,37 @@ export default {
       return this.$store.state.o_r_delivery;
     },
     _config() {
-      return this.$store.state.o_r_delivery.configs[this.taging];
+      return this.$store.state.o_r_delivery.configs[this.tagComponentName];
     },
-    _key() {
-      return this.$store.getters["o_r_delivery/getIdStr"];
-    }
   },
   watch: {
-    date(newData,oldData) {
+    activationTime(newData, oldData) {
       var date = newData.map(item => moment(item).format("YYYY-MM-DD"));
-      if(new Date(date[0]).getTime()>new Date(this.payDate[1]).getTime()){
+      if (new Date(date[0]).getTime() > new Date(this.dateFormat(this.rechargeTime)[1]).getTime()) {
         this.date = oldData;
         return Utils.Notification.error({ message: '激活开始时间大于充值结束时间,请重新选择' });
-      }else{
-        this.$store.commit("o_r_delivery/setDate", date);
-        this.payDate = [date[0],this.payDate[1]]
+      } else {
+        this.rechargeTime = [date[0], this.dateFormat(this.rechargeTime)[1]]
       }
-      
+
     },
-    payDate(data){
-      var date = data.map(item => {
-        if(typeof item === 'string'){
-          return item
-        }
-        return moment(item).format("YYYY-MM-DD")
-      });
-      this.$store.commit("o_r_delivery/setPayDate", date);
-    },
-    os(data) {
-      this.$store.commit("o_r_delivery/setOs", data);
-    }
+    
   },
   methods: {
     getFilterList() {
       var params = {
-        in_install_date1: this._state.date[0],          //激活开始日期
-        in_install_date2: this._state.date[1],          //激活结束日期
-        in_pay_date1:this._state.payDate[0],            //充值开始时间
-        in_pay_date2:this._state.payDate[1],            //充值结束时间
-        in_os: this._state.os,                        //系统                  
-        in_area_app_ids: this._key,                    //游戏层级 
+        in_install_date1: this.dateFormat(this.activationTime)[0],          //激活开始日期
+        in_install_date2: this.dateFormat(this.activationTime)[1],          //激活结束日期
+        in_pay_date1: this.dateFormat(this.rechargeTime)[0],            //充值开始时间
+        in_pay_date2: this.dateFormat(this.rechargeTime)[1],            //充值结束时间
+        in_os: this.os,                        //系统                  
+        in_area_app_ids: this.getIdStr(),                    //游戏层级 
         in_media_source: "",                           //渠道
         in_rpt_type: 4,                                //报表类型: 1 查询游戏层级  2 综合报表  3 每日报表   4 渠道(媒体)报表   5 系统对比
         in_country: '',                               //国家
         in_chart_type: 0,                              //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
         in_view_type: 1,                               //视图类型：1 渠道 2 时间 3 地区
-        in_package_name:""                             //包名
+        in_package_name: ""                             //包名
       };
       this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: 'channelInfo' });
     },
@@ -535,7 +446,7 @@ export default {
         var data = this.$store.getters["o_r_delivery/getComprehensive"];
         var len = data.category.length
         for (var i = 0; i < len; i++) {
-          var thead = document.querySelectorAll('.el-table__header thead')[i*2].innerHTML
+          var thead = document.querySelectorAll('.el-table__header thead')[i * 2].innerHTML
           var tbody = document.querySelectorAll('.el-table__header-wrapper+.el-table__body-wrapper>table:first-child')[i].innerHTML + document.querySelectorAll('.el-table__append-wrapper tbody')[i].innerHTML
           var table = document.createElement('table')
           table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
@@ -547,12 +458,12 @@ export default {
         }
       } else {
         if (this.main === "daily") {
-          var tbody = document.querySelector('.el-table__body tbody').innerHTML+document.querySelector('.el-table__append-wrapper tbody').innerHTML
+          var tbody = document.querySelector('.el-table__body tbody').innerHTML + document.querySelector('.el-table__append-wrapper tbody').innerHTML
         } else {
-          var tbody = document.querySelector('.el-table__body tbody').innerHTML+document.querySelector('.el-table__footer tbody').innerHTML
+          var tbody = document.querySelector('.el-table__body tbody').innerHTML + document.querySelector('.el-table__footer tbody').innerHTML
         }
         var thead = document.querySelector('.el-table__header thead').innerHTML
-        
+
         var table = document.createElement('table')
         table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
         Utils.tableToExcel(
@@ -563,11 +474,11 @@ export default {
       }
     },
     getIdStr() {
-      if (this.data.gameArr.length) {
-        return this.data.gameArr[0];
+      if (this.tsdp.gameArr.length) {
+        return this.tsdp.gameArr[0];
       }
-      if (this.data.regionArr.length) {
-        return this.data.regionArr.join(",");
+      if (this.tsdp.regionArr.length) {
+        return this.tsdp.regionArr.join(",");
       }
       return "";
     },
@@ -582,10 +493,9 @@ export default {
       }
     },
     pickerChange() {
-      var date = moment(this.value2).format("YYYY-MM-DD");
+      var date = moment(this.emailParams).format("YYYY-MM-DD");
       if (confirm("确定生成" + date + "的邮件吗")) {
         this.$data.mailDate = date
-
         api.user
           .getMail({
             countDate: date,
@@ -604,18 +514,16 @@ export default {
       }
     },
     tagClick(flag) {
-      console.log(this.taging)
-      console.log(flag)
       this.$store.commit("o_r_delivery/set_is2", false);
       var isQuery;
       // 对比查询参数是否一致
-      var lastQueryParam = flag ? this._state.lastQueryParam['system'] : this._state.lastQueryParam[this.taging];
+      var lastQueryParam = flag ? this._state.lastQueryParam['system'] : this._state.lastQueryParam[this.tagComponentName];
       if (lastQueryParam) {
         var same;
         same = [
           lastQueryParam.os === this.os,
-          lastQueryParam.begin_date === this._state.date[0],
-          lastQueryParam.end_date === this._state.date[1],
+          lastQueryParam.begin_date === this._state.activationTime[0],
+          lastQueryParam.end_date === this._state.activationTime[1],
           lastQueryParam.gameIds === this.getIdStr()
         ];
         if (same.indexOf(false) !== -1) isQuery = true;
@@ -623,86 +531,80 @@ export default {
         isQuery = true;
       }
       if (flag) {
-        isQuery && this.getData('system', this.taging);
+        isQuery && this.getData('system', this.tagComponentName);
       } else {
-        this.main = this.taging
-        isQuery && this.getData(false, this.taging);
+        this.main = this.tagComponentName
+        isQuery && this.getData(false, this.tagComponentName);
       }
     },
     setRcg([region, regionArr, game, gameArr]) {
-      this.data.region = region;
-      this.data.regionArr = regionArr;
-      this.data.game = game;
-      this.data.gameArr = gameArr;
+      this.tsdp.region = region;
+      this.tsdp.regionArr = regionArr;
+      this.tsdp.game = game;
+      this.tsdp.gameArr = gameArr;
+    },
+    dateFormat(val) {
+      var date = val.map(item => {
+        if (typeof item === 'string') {
+          return item
+        }
+        return moment(item).format("YYYY-MM-DD")
+      });
+      return date
     },
     dataInit() {
-      if (this._state.taging) {
-        this.main = this.taging = this._state.taging;
-      } else {
-        this.main = this.taging = "comprehensive";
-      }
-      if (this._state.os) {
-        this.os = this._state.os;
+       // 如果加载渠道报表则隐藏报表tab选项
+      this.isSingle = this.tsdp.game?true:false;
+      this.$refs.picker1.mountPicker();
+      this.$refs.picker1.picker.dateShortcuts = this.dateShortcuts
+      this.$refs.picker1.picker._parentEl = this.$refs.picker1.$el;
+      this.$refs.picker2.mountPicker();
+      this.$refs.picker2.picker.dateShortcuts = this.dateShortcuts
+      this.$refs.picker2.picker._parentEl = this.$refs.picker2.$el;
+      window.addEventListener("keydown", this.onKeyDown);
+      if (this._state.reportQueryParams) {
+        this.main = this.tagComponentName = this._state.reportQueryParams.tagComponentName;
+        this.activationTime = this._state.reportQueryParams.activationTime;
+        this.rechargeTime = this._state.reportQueryParams.rechargeTime;
+        this.os = this._state.reportQueryParams.os;
+
+        this.tsdp.region = this._state.region;
+        this.tsdp.regionArr = this._state.regionArr;
+        this.tsdp.game = this._state.game;
+        this.tsdp.gameArr = this._state.gameArr;
       } else {
         this.os = "0,1";
+        this.main = this.tagComponentName = "comprehensive";
+        this.rechargeTime = [moment().add(-1, "day").format("YYYY-MM-DD"), moment().add(-1, "day").format("YYYY-MM-DD")];
+        this.activationTime = [moment().add(-1, "day").format("YYYY-MM-DD"), moment().add(-1, "day").format("YYYY-MM-DD")];
       }
-      if (this._state.date) {
-        this.date = this._state.date;
-      } else {
-        this.date = [
-          moment()
-            .add(-1, "day")
-            .format("YYYY-MM-DD"),
-          moment()
-            .add(-1, "day")
-            .format("YYYY-MM-DD")
-        ];
-      }
-      if (this._state.payDate) {
-        this.payDate = this._state.payDate;
-      } else {
-        this.payDate = [
-          moment()
-            .add(-1, "day")
-            .format("YYYY-MM-DD"),
-          moment()
-            .add(-1, "day")
-            .format("YYYY-MM-DD")
-        ];
-      }
-      if (this._state.region) this.data.region = this._state.region;
-      if (this._state.regionArr) this.data.regionArr = this._state.regionArr;
-      if (this._state.game) this.data.game = this._state.game;
-      if (this._state.gameArr) this.data.gameArr = this._state.gameArr;
     },
     getData(taging_, isType) {
       // 修改动态组件
-      if (taging_) this.taging = taging_;
-      this.main = this.taging;
+      if (taging_) this.tagComponentName = taging_;
+      this.main = this.tagComponentName;
       // 第一步:判断按下的是否是查询按钮
       if (isType) {
-        console.log('tag', '按下的不是查询按钮')
-        var arr = ["daily","comprehensive"]
-        if (arr.includes(this.taging) && this.data.game) {
-        // 第二步:判断是否选择游戏
+        var arr = ["daily", "comprehensive"]
+        if (arr.includes(this.tagComponentName) && this.tsdp.game) {
+          // 第二步:判断是否选择游戏
           this.main = 'channel'
-          this.taging = 'channel'
-          console.log('tag', '查询单个全部')
+          this.tagComponentName = 'channel'
           this.isSingle = false;
           this.in_rpt_type = 4
           this.in_view_type = 1
-        }else if(this.taging == "system"){
+        } else if (this.tagComponentName == "system") {
           this.in_rpt_type = 5;
           this.in_chart_type = 0;
           this.in_view_tye = 0;
-        }else {
+        } else {
           this.in_chart_type = 0;
           this.in_view_tye = 0;
-          if (this.taging == "comprehensive") {
+          if (this.tagComponentName == "comprehensive") {
             this.in_rpt_type = 2;
-          } else if (this.taging == "daily") {
+          } else if (this.tagComponentName == "daily") {
             this.in_rpt_type = 3;
-          } else if (this.taging == "system") {
+          } else if (this.tagComponentName == "system") {
             this.in_rpt_type = 5;
             this.in_chart_type = 0;
             this.in_view_tye = 0;
@@ -710,53 +612,55 @@ export default {
         }
       } else {
         //如果是查询按钮,判断是当前查询组件
-        // console.log('tag', '按下的是查询按钮')
-        if (!this.data.game) {
+        if (!this.tsdp.game) {
           this.isSingle = true;
-          // console.log('tag', '查询全部')
           this.in_rpt_type = 2;
           this.in_view_type = 0;
         } else {
-          // console.log('tag', '查询单个全部')
-          if (this.data.game) {
+          if (this.tsdp.game) {
             this.isSingle = false;
             this.in_rpt_type = 4
             this.in_view_type = 1
             // this.in_chart_type = 1
             if (this.$store.state.o_r_delivery.tableIsVisible) {
-              // console.log('tag', '查询channel table数据')
               this.in_chart_type = 1
             } else {
-              // console.log('tag', '查询channel legend数据')
               this.in_chart_type = 2
-
             }
           }
         }
       }
-      this.$store.commit("o_r_delivery/setTaging", this.taging);
-      this.$store.commit("o_r_delivery/setRegion", this.data.region);
-      this.$store.commit("o_r_delivery/setRegionArr", this.data.regionArr);
-      this.$store.commit("o_r_delivery/setGame", this.data.game);
-      this.$store.commit("o_r_delivery/setGameArr", this.data.gameArr);
+      
       var params = {
-        in_install_date1: this._state.date[0],          //激活开始日期
-        in_install_date2: this._state.date[1],          //激活结束日期
-        in_pay_date1:this._state.payDate[0],            //充值开始时间
-        in_pay_date2:this._state.payDate[1],            //充值结束时间
-        in_os: this._state.os,                        //系统                  
-        in_area_app_ids: this._key,                    //游戏层级 
+        in_install_date1: this.dateFormat(this.activationTime)[0],          //激活开始日期
+        in_install_date2: this.dateFormat(this.activationTime)[1],          //激活结束日期
+        in_pay_date1: this.dateFormat(this.rechargeTime)[0],            //充值开始时间
+        in_pay_date2: this.dateFormat(this.rechargeTime)[1],            //充值结束时间
+        in_os: this.os,                        //系统                  
+        in_area_app_ids: this.getIdStr(),                    //游戏层级 
         in_media_source: "",                           //渠道
         in_rpt_type: this.in_rpt_type,                 //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
         in_country: '',                               //国家
         in_chart_type: this.in_chart_type,             //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
         in_view_type: this.in_view_type,               //视图类型：1 渠道 2 时间 3 地区
-        in_package_name:""                             //包名
+        in_package_name: ""                             //包名
       };
-      this._state.lastQueryParam[this.taging] = params;
-      this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? this.taging : 'legend' }).then(
+      this._state.lastQueryParam[this.tagComponentName] = params;
+      this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? this.tagComponentName : 'legend' }).then(
         () => {
-          if (this.taging == 'channel' && 　this.$store.state.o_r_delivery.tableIsVisible) {
+          let reportQueryParams = {
+            os: this.os,
+            rechargeTime: this.dateFormat(this.rechargeTime),
+            activationTime: this.dateFormat(this.activationTime),
+            tagComponentName:this.tagComponentName
+          }
+
+          this.$store.commit("o_r_delivery/setReportQueryParams", reportQueryParams);
+          this.$store.commit("o_r_delivery/setRegionArr", this.tsdp.regionArr);
+          this.$store.commit("o_r_delivery/setGameArr", this.tsdp.gameArr);
+          this.$store.commit("o_r_delivery/setRegion", this.tsdp.region);
+          this.$store.commit("o_r_delivery/setGame", this.tsdp.game);
+          if (this.tagComponentName == 'channel' && this.$store.state.o_r_delivery.tableIsVisible) {
             this.getFilterList()
           }
         }
@@ -768,7 +672,7 @@ export default {
     onKeyDown({ keyCode }) {
       switch (keyCode) {
         case 13:
-          if (!this.data.isShow) {
+          if (!this.tsdp.isShow) {
             this.getData(this.taging_, false);
           }
           break;
@@ -776,27 +680,16 @@ export default {
     }
   },
   created() {
-    this.dataInit();
     this.$store.dispatch("overseas_common/getList1").then(data => {
       if (!this._state.region || !this._state.regionArr.length) {
-        this.data.region = this.data.allTxt;
-        this.data.regionArr = this.$store.state.overseas_common.list1All;
+        this.tsdp.region = this.tsdp.allTxt;
+        this.tsdp.regionArr = this.$store.state.overseas_common.list1All;
       }
-      if (!this._state[this.taging][this._key]) this.getData();
+      if (!this._state[this.tagComponentName][this.getIdStr()]) this.getData();
     });
   },
   mounted() {
-    // 如果加载渠道报表则隐藏报表tab选项
-    if (this.data.game) {
-      this.isSingle = false;
-    }
-    this.$refs.picker1.mountPicker();
-    this.$refs.picker1.picker.dateShortcuts = this.dateShortcuts
-    this.$refs.picker1.picker._parentEl = this.$refs.picker1.$el;
-    this.$refs.picker2.mountPicker();
-    this.$refs.picker2.picker.dateShortcuts = this.dateShortcuts
-    this.$refs.picker2.picker._parentEl = this.$refs.picker2.$el;
-    window.addEventListener("keydown", this.onKeyDown);
+    this.dataInit();
   },
   destroyed() {
     window.removeEventListener("keydown", this.onKeyDown);
@@ -819,7 +712,7 @@ export default {
 }
 .selection-box {
   position: relative;
-  .dateTime{
+  .dateTime {
     position: absolute;
     top: -60px;
     left: 165px;

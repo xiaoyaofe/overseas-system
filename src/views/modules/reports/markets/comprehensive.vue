@@ -1,8 +1,5 @@
 <template>
   <div v-if="$$data">
-    <!-- <div class="chart-area" ref="chart"></div>
-        :render-header="renderHeader.bind(this, region)" 
-     -->
     <div class="table-item" v-for="(region, i) in $$data.category" :key="i">
       <el-table :default-sort="{prop: _config.keys[_config.index.activeIndex], order: $data.$_order}" :data="$$data[region]" :cell-style="addStyle">
         <el-table-column v-for="(item, i) in _config.tableKey" :key="i" 
@@ -45,14 +42,7 @@ export default {
 
   computed: {
     $$data() {
-      var _ = this.$store.getters['o_r_delivery/getComprehensive']
-      if (_) {
-        this.$nextTick(() => {
-          // 创建图表
-          // this.createChart()
-        })
-      }
-      return _
+     return this.$store.getters['o_r_delivery/getComprehensive']
     }
   },
   methods: {
@@ -62,18 +52,6 @@ export default {
         if (!item.hide) width += item.width
       })
       return width + 'px'
-    },
-    renderHeader(region, h, { column, $index }) {
-      if (!$index) {
-        return h(
-          'div',
-          {
-            class: 'region'
-          },
-          region
-        )
-      }
-      return column.label
     },
     formatter(row, column, value) {
       var {
@@ -94,17 +72,6 @@ export default {
         value += '%'
       } 
       return value
-    },
-    createChart() {
-      var serials = (() => {
-        return this._config.chartKey.map(key => {
-          var data = this.$$data.category.map(region => {
-            return this.$$data.total[region][key]
-          })
-          return { name: key, data: data }
-        })
-      })()
-      highchartUtil.drawChart(this.$refs.chart, 'column', this.$$data.category, serials)
     },
     addStyle({ row, column, rowIndex, columnIndex }) {
       function r2g(value, avg) {

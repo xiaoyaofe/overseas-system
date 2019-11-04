@@ -45,31 +45,16 @@ export default {
     channelSelectDataInfo:null,
     filterTitleData:[],
     filterTitleDataValue:[],
-    date: [
-      moment()
-        .add(-1, "day")
-        .format("YYYY-MM-DD"),
-      moment()
-        .add(-1, "day")
-        .format("YYYY-MM-DD")
-    ],
-    payDate:[
-      moment()
-        .add(-1, "day")
-        .format("YYYY-MM-DD"),
-      moment()
-        .add(-1, "day")
-        .format("YYYY-MM-DD")
-    ],
+    activationTime: [],
+    rechargeTime:[],
     os: null,
-
     region: null,
     regionArr: [],
     game: null,
     gameArr: [],
     mailUrl: null,
-    taging: null,
-
+    tagComponentName: null,
+    reportQueryParams:null,
     comprehensive: {},
     daily: {},
     zone: {},
@@ -100,17 +85,11 @@ export default {
 
   },
   mutations: {
-    setTaging(state, data) {
-      state.taging = data
+    setReportQueryParams(state,data){
+      state.reportQueryParams = data
     },
-    setDate(state, data) {
-      state.date = data
-    },
-    setPayDate(state,data){
-      state.payDate = data
-    },
-    setOs(state, data) {
-      state.os = data
+    setTagComponentName(state, data) {
+      state.tagComponentName = data
     },
     setRegion(state, data) {
       state.region = data
