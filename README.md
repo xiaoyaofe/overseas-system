@@ -23,6 +23,11 @@
 - 样式库: bootstrap,icon-font
 - 其他: jquery,moment, js-md5等
 
+##### 安装依赖
+```
+npm install
+```
+
 ##### 编译运行
 ```
 npm run dev
