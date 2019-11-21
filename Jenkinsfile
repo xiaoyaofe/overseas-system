@@ -2,15 +2,14 @@ pipeline {
     agent { label 'ansible' }
     environment {
         project = "oas"
-        ppath = "/data/packages/test/frontend"
-        rpath = "/data/k8s/packages/test/frontend"
+        path = "/data/k8s/packages/test/frontend"
     }
     stages {
         stage('BUILD') {
             agent { docker {
                 image 'reg.royale.com/ops/xynode:8-alpine'
                 label 'jenkins-slave'
-                args "-v ${ppath}:/data/app"
+                args "-v ${path}:/data/app"
             }}
             steps {
                 script {
@@ -38,7 +37,7 @@ pipeline {
                     try {
                         sh '''
                             workspace=$(pwd)
-                            cd ${rpath}/${project}/$(date '+%Y%m%d')
+                            cd ${path}/${project}/$(date '+%Y%m%d')
                             cd dist
                             filename="${project}-$(date '+%Y%m%d%H%M%S').zip"
                             zip -qr ${filename} *
@@ -47,7 +46,7 @@ pipeline {
                             rm -rf dist
 
                             cd ${workspace}/ansible
-                            src_file="${rpath}/${project}/$(date '+%Y%m%d')/${filename}"
+                            src_file="${path}/${project}/$(date '+%Y%m%d')/${filename}"
                             dest_file="/data/server_new/${filename}"
                             arch_file="${project}-$(date '+%Y%m%d%H%M%S').zip"
                             ansible-playbook -i hosts deploy.yml --extra-var "src_file=${src_file} dest_file=${dest_file} project=${project} arch_file=${arch_file}"
