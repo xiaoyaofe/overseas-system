@@ -121,7 +121,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import filterBox from './filter-box.vue'
 import http from 'src/services/http';

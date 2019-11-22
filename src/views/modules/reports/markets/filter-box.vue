@@ -133,7 +133,8 @@ export default {
     this.init_selectData(this._state.channelSelectDataInfo)
   },
   computed: {
-    _state() {
+    _state() {console.log(89,this.$store.state.o_r_delivery);
+    
       return this.$store.state.o_r_delivery;
     },
     _key() {
@@ -279,10 +280,10 @@ export default {
     },
     getSearchData() {
       var params = {
-        in_install_date1: this._state.date[0],          //激活开始日期
-        in_install_date2: this._state.date[1],          //激活结束日期
-        in_pay_date1: this._state.payDate[0],            //充值开始时间
-        in_pay_date2: this._state.payDate[1],            //充值结束时间
+        in_install_date1: this._state.reportQueryParams.activationTime[0],          //激活开始日期
+        in_install_date2: this._state.reportQueryParams.activationTime[1],          //激活结束日期
+        in_pay_date1: this._state.reportQueryParams.rechargeTime[0],            //充值开始时间
+        in_pay_date2: this._state.reportQueryParams.rechargeTime[1],            //充值结束时间
         in_os: this.systemValue.length == 3 ? '0,1' : this.systemValue.join(","), //系统                  
         in_area_app_ids: this._key,                          //游戏层级 
         in_rpt_type: 4,                                 //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比

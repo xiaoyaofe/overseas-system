@@ -346,7 +346,6 @@ export default {
       } else {
         this.rechargeTime = [date[0], this.dateFormat(this.rechargeTime)[1]]
       }
-
     },
     
   },
