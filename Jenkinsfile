@@ -20,8 +20,11 @@ pipeline {
                             npm run build
                             dt=$(date '+%Y%m%d')
                             mkdir -p /data/app/${project}/${dt}
-                            rm -rf /data/app/${project}/${dt}/dist
-                            cp -rf dist /data/app/${project}/${dt}/
+                            cd dist
+                            filename="${project}-$(date '+%Y%m%d%H%M%S').zip"
+                            zip -qr ${filename} *
+                            cp -rf ${filename} /data/app/${project}/${dt}/
+                            echo ${filename} > /data/app/${project}/${dt}/file.txt
                         '''
                     } catch(err) {
                         echo 'npm build error'
@@ -38,12 +41,7 @@ pipeline {
                         sh '''
                             workspace=$(pwd)
                             cd ${path}/${project}/$(date '+%Y%m%d')
-                            cd dist
-                            filename="${project}-$(date '+%Y%m%d%H%M%S').zip"
-                            zip -qr ${filename} *
-                            mv ${filename} ../
-                            cd ../
-                            rm -rf dist
+                            filename=$(cat file.txt)
 
                             cd ${workspace}/ansible
                             src_file="${path}/${project}/$(date '+%Y%m%d')/${filename}"
