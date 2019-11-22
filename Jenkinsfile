@@ -2,7 +2,7 @@ pipeline {
     agent { label 'ansible' }
     environment {
         project = "oas"
-        ppath = "/data/k8s/packages/prod/frontend"
+        ppath = "/data/k8s/packages/test/frontend"
     }
     stages {
         stage('BUILD') {
@@ -41,6 +41,7 @@ pipeline {
                         sh '''
                             workspace=$(pwd)
 <<<<<<< HEAD
+<<<<<<< HEAD
                             cd ${rpath}/${project}/$(date '+%Y%m%d')
                             cd dist
                             filename="${project}-$(date '+%Y%m%d%H%M%S').zip"
@@ -58,6 +59,12 @@ pipeline {
                             cd ${workspace}/ansible
                             src_file="${ppath}/${project}/$(date '+%Y%m%d')/${filename}"
 >>>>>>> d3c1384eb3bcd0a1120e0539af3bb3c028cdc700
+=======
+                            cd ${ppath}/${project}/$(date '+%Y%m%d')
+                            filename=$(cat file.txt)
+                            cd ${workspace}/ansible
+                            src_file="${ppath}/${project}/$(date '+%Y%m%d')/${filename}"
+>>>>>>> 0c37f3195ecb60f1bf0250d701af7882f5ccc2f4
                             dest_file="/data/server_new/${filename}"
                             arch_file="${project}-$(date '+%Y%m%d%H%M%S').zip"
                             ansible-playbook -i hosts deploy.yml --extra-var "src_file=${src_file} dest_file=${dest_file} project=${project} arch_file=${arch_file}"
