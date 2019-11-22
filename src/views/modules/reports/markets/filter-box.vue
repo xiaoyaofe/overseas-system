@@ -99,17 +99,29 @@
   </section>
 </template>
 <script>
-import http from 'src/services/http';
+import http from "src/services/http";
 export default {
-  props:["sendParams"],
+  props: ["sendParams"],
   data() {
     return {
-      viewValue: '1',     //视图下标
-      viewOptions: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' }],
+      viewValue: "1", //视图下标
+      viewOptions: [
+        { value: "1", label: "渠道" },
+        { value: "2", label: "时间" },
+        { value: "3", label: "地区" }
+      ],
       // 系统
-      systemValue: ["all", "0", "1"],   
-      systemOptions: [{ value: 'all', label: '全部' }, { value: '0', label: 'IOS' }, { value: '1', label: 'android' }],
-      systemOptionsCopy: [{ value: 'all', label: '全部' }, { value: '0', label: 'IOS' }, { value: '1', label: 'android' }],
+      systemValue: ["all", "0", "1"],
+      systemOptions: [
+        { value: "all", label: "全部" },
+        { value: "0", label: "IOS" },
+        { value: "1", label: "android" }
+      ],
+      systemOptionsCopy: [
+        { value: "all", label: "全部" },
+        { value: "0", label: "IOS" },
+        { value: "1", label: "android" }
+      ],
       systemOldOptions: [[]],
       // 包名
       packageNameValue: [],
@@ -125,47 +137,56 @@ export default {
       areaValue: [],
       areaOptions: [],
       areaOptionsCopy: [],
-      areaOldOptions: [[]],
-    }
+      areaOldOptions: [[]]
+    };
   },
   created() {
     // 初始化
-    this.init_selectData(this._state.channelSelectDataInfo)
+    this.init_selectData(this._state.channelSelectDataInfo);
   },
   computed: {
-    _state() {console.log(89,this.$store.state.o_r_delivery);
-    
+    _state() {
+      console.log(89, this.$store.state.o_r_delivery);
+
       return this.$store.state.o_r_delivery;
     },
     _key() {
       return this.$store.getters["o_r_delivery/getIdStr"];
     },
     channelSelectData() {
-      return this.$store.state.o_r_delivery.channelSelectData
+      return this.$store.state.o_r_delivery.channelSelectData;
     },
 
     viewType() {
-      return this.$store.state.o_r_delivery.tableIsVisible
-    },
+      return this.$store.state.o_r_delivery.tableIsVisible;
+    }
   },
   watch: {
     channelSelectData(newValue, oldValue) {
-      this.init_selectData(newValue)
+      this.init_selectData(newValue);
     },
     viewType(newValue, oldValue) {
       if (newValue) {
-        this.viewOptions = [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' }];
+        this.viewOptions = [
+          { value: "1", label: "渠道" },
+          { value: "2", label: "时间" },
+          { value: "3", label: "地区" }
+        ];
       } else {
-        this.viewOptions = [{ value: '1', label: '渠道' }, { value: '3', label: '地区' }];
+        this.viewOptions = [
+          { value: "1", label: "渠道" },
+          { value: "3", label: "地区" }
+        ];
       }
-
     }
   },
   methods: {
     init_selectData(newValue) {
       if (newValue) {
-        this.viewValue = newValue.viewValue?newValue.viewValue:"1";
-        this.systemValue = newValue.systemValue?newValue.systemValue:["all", "0", "1"];
+        this.viewValue = newValue.viewValue ? newValue.viewValue : "1";
+        this.systemValue = newValue.systemValue
+          ? newValue.systemValue
+          : ["all", "0", "1"];
         this.packageNameValue = newValue.packageNameValue;
         this.packageNameOptions = newValue.packageNameData;
         this.packageNameOptionsCopy = newValue.packageNameValue;
@@ -177,38 +198,48 @@ export default {
         this.areaOptionsCopy = newValue.areaDataValue;
       }
     },
-    elementSelectAll(val, valueName, optionsCopy, oldOptions, optionsName, changeNameIndex) {
-      let allValues = []
+    elementSelectAll(
+      val,
+      valueName,
+      optionsCopy,
+      oldOptions,
+      optionsName,
+      changeNameIndex
+    ) {
+      let allValues = [];
       //保留所有值
       for (let item of this.$data[optionsName]) {
-        allValues.push(item.value)
+        allValues.push(item.value);
       }
       // 用来储存上一次的值，可以进行对比
-      const oldVal = this.$data[oldOptions].length === 1 ? [] : this.$data[oldOptions][1]
+      const oldVal =
+        this.$data[oldOptions].length === 1 ? [] : this.$data[oldOptions][1];
       // 若是全部选择
-      if (val.includes('all')) {
+      if (val.includes("all")) {
         if (this.$data[optionsCopy].length != allValues.length) {
-          allValues.shift()
+          allValues.shift();
         }
-        this.$data[valueName] = allValues
+        this.$data[valueName] = allValues;
       }
       // 取消全部选中  上次有 当前没有 表示取消全选
-      if (oldVal.includes('all') && !val.includes('all')) this.$data[valueName] = []
-      // 点击非全部选中  需要排除全部选中 以及 当前点击的选项 
-      // 新老数据都有全部选中 
-      if (oldVal.includes('all') && val.includes('all')) {
-        const index = val.indexOf('all')
-        val.splice(index, 1) // 排除全选选项
-        this.$data[valueName] = val
+      if (oldVal.includes("all") && !val.includes("all"))
+        this.$data[valueName] = [];
+      // 点击非全部选中  需要排除全部选中 以及 当前点击的选项
+      // 新老数据都有全部选中
+      if (oldVal.includes("all") && val.includes("all")) {
+        const index = val.indexOf("all");
+        val.splice(index, 1); // 排除全选选项
+        this.$data[valueName] = val;
       }
       //全选未选 但是其他选项全部选上 则全选选上 上次和当前 都没有全选
-      if (!oldVal.includes('all') && !val.includes('all')) {
-        if (val.length === allValues.length - 1) this.$data[valueName] = ['all'].concat(val)
+      if (!oldVal.includes("all") && !val.includes("all")) {
+        if (val.length === allValues.length - 1)
+          this.$data[valueName] = ["all"].concat(val);
       }
-      //储存当前最后的结果 作为下次的老数据 
-      this.$data[oldOptions][1] = this.$data[valueName]
+      //储存当前最后的结果 作为下次的老数据
+      this.$data[oldOptions][1] = this.$data[valueName];
 
-      //change逻辑*************************************************************************************/ 
+      //change逻辑*************************************************************************************/
       let allData = this.channelSelectData.allData;
       switch (changeNameIndex) {
         case "1":
@@ -216,12 +247,28 @@ export default {
           this.$data[valueName];
           if (this.$data[valueName].includes("all")) {
             // 如果选择的是全部包名,则选中全部渠道和全部地区
-            this.channelValue = ['all'].concat([...new Set(allData.map(item => item.media_source))])
-            this.channelOptions = (this.channelValue.map(item => { return { lable: item === 'all' ? '全部' : item, value: item } }))
+            this.channelValue = ["all"].concat([
+              ...new Set(allData.map(item => item.media_source))
+            ]);
+            this.channelOptions = this.channelValue.map(item => {
+              return { lable: item === "all" ? "全部" : item, value: item };
+            });
             this.channelOptionsCopy = this.channelOptions;
 
-            this.areaValue = ['all'].concat([...new Set(allData.map(item => item['国家']))])
-            this.areaOptions = (this.areaValue.map((item, i) => { return { lable: item === 'all' ? '全部' : [...new Set(allData.map(item => item.country_name))][i - 1], value: item } }))
+            this.areaValue = ["all"].concat([
+              ...new Set(allData.map(item => item["国家"]))
+            ]);
+            this.areaOptions = this.areaValue.map((item, i) => {
+              return {
+                lable:
+                  item === "all"
+                    ? "全部"
+                    : [...new Set(allData.map(item => item.country_name))][
+                        i - 1
+                      ],
+                value: item
+              };
+            });
             this.areaOptionsCopy = this.areaOptions;
           } else if (!this.$data[valueName].length) {
             // 如果选择的包名为空,则渠道和地区都为空
@@ -236,14 +283,43 @@ export default {
             // 如果未选中全部包名,则要选中对用渠道和地区
             let filter_area_data = [];
             let filter_channel_data = [];
-            this.$data[valueName].map((item) => { return filter_channel_data.push(allData.filter((todo) => todo.package_name === item)) })
-            this.channelValue = ["all"].concat([...new Set(Array.prototype.concat.apply([], filter_channel_data).map((item) => item.media_source))])
-            this.channelOptions = (this.channelValue.map(item => { return { lable: item === 'all' ? '全部' : item, value: item } }))
+            this.$data[valueName].map(item => {
+              return filter_channel_data.push(
+                allData.filter(todo => todo.package_name === item)
+              );
+            });
+            this.channelValue = ["all"].concat([
+              ...new Set(
+                Array.prototype.concat
+                  .apply([], filter_channel_data)
+                  .map(item => item.media_source)
+              )
+            ]);
+            this.channelOptions = this.channelValue.map(item => {
+              return { lable: item === "all" ? "全部" : item, value: item };
+            });
             this.channelOptionsCopy = this.channelOptions;
 
-            filter_channel_data = Array.prototype.concat.apply([], filter_channel_data);
-            this.areaValue = ['all'].concat([...new Set(filter_channel_data.map(item => item['国家']))])
-            this.areaOptions = (this.areaValue.map((item, i) => { return { lable: item === 'all' ? '全部' : [...new Set(filter_channel_data.map(item => item.country_name))][i - 1], value: item } }))
+            filter_channel_data = Array.prototype.concat.apply(
+              [],
+              filter_channel_data
+            );
+            this.areaValue = ["all"].concat([
+              ...new Set(filter_channel_data.map(item => item["国家"]))
+            ]);
+            this.areaOptions = this.areaValue.map((item, i) => {
+              return {
+                lable:
+                  item === "all"
+                    ? "全部"
+                    : [
+                        ...new Set(
+                          filter_channel_data.map(item => item.country_name)
+                        )
+                      ][i - 1],
+                value: item
+              };
+            });
             this.areaOptionsCopy = this.areaOptions;
           }
 
@@ -252,8 +328,20 @@ export default {
           // 修改渠道
           if (this.$data[valueName].includes("all")) {
             // 如果选择的是全部渠道,则选中全部地区
-            this.areaValue = ['all'].concat([...new Set(allData.map(item => item['国家']))])
-            this.areaOptions = (this.areaValue.map((item, i) => { return { lable: item === 'all' ? '全部' : [...new Set(allData.map(item => item.country_name))][i - 1], value: item } }))
+            this.areaValue = ["all"].concat([
+              ...new Set(allData.map(item => item["国家"]))
+            ]);
+            this.areaOptions = this.areaValue.map((item, i) => {
+              return {
+                lable:
+                  item === "all"
+                    ? "全部"
+                    : [...new Set(allData.map(item => item.country_name))][
+                        i - 1
+                      ],
+                value: item
+              };
+            });
             this.areaOptionsCopy = this.areaOptions;
           } else if (!this.$data[valueName].length) {
             // 如果选择的渠道为空,则地区为空
@@ -263,10 +351,35 @@ export default {
           } else {
             // 如果未选中全部渠道,则要选中对应地区
             let filter_area_data = [];
-            this.$data[valueName].map((item) => { return filter_area_data.push(allData.filter((todo) => todo.media_source === item)) })
-            this.areaValue = ["all"].concat([...new Set(Array.prototype.concat.apply([], filter_area_data).map((item) => item['国家']))])
-            filter_area_data = Array.prototype.concat.apply([], filter_area_data);
-            this.areaOptions = (this.areaValue.map((item, i) => { return { lable: item === 'all' ? '全部' : [...new Set(filter_area_data.map(item => item.country_name))][i - 1], value: item } }))
+            this.$data[valueName].map(item => {
+              return filter_area_data.push(
+                allData.filter(todo => todo.media_source === item)
+              );
+            });
+            this.areaValue = ["all"].concat([
+              ...new Set(
+                Array.prototype.concat
+                  .apply([], filter_area_data)
+                  .map(item => item["国家"])
+              )
+            ]);
+            filter_area_data = Array.prototype.concat.apply(
+              [],
+              filter_area_data
+            );
+            this.areaOptions = this.areaValue.map((item, i) => {
+              return {
+                lable:
+                  item === "all"
+                    ? "全部"
+                    : [
+                        ...new Set(
+                          filter_area_data.map(item => item.country_name)
+                        )
+                      ][i - 1],
+                value: item
+              };
+            });
             this.areaOptionsCopy = this.areaOptions;
           }
           break;
@@ -280,50 +393,63 @@ export default {
     },
     getSearchData() {
       var params = {
-        in_install_date1: this._state.reportQueryParams.activationTime[0],          //激活开始日期
-        in_install_date2: this._state.reportQueryParams.activationTime[1],          //激活结束日期
-        in_pay_date1: this._state.reportQueryParams.rechargeTime[0],            //充值开始时间
-        in_pay_date2: this._state.reportQueryParams.rechargeTime[1],            //充值结束时间
-        in_os: this.systemValue.length == 3 ? '0,1' : this.systemValue.join(","), //系统                  
-        in_area_app_ids: this._key,                          //游戏层级 
-        in_rpt_type: 4,                                 //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
-        in_chart_type: 0,                               //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
-        in_view_type: this.viewValue,             //视图类型：1 渠道 2 时间 3 地区
-        in_package_name: this.packageNameValue.includes("all") ? '' : this.packageNameValue.join(','),             //包名
-        in_media_source: this.channelValue.includes("all") ? '' : this.channelValue.join(','),        //渠道
-        in_country: this.areaValue.includes("all") ? '' : this.areaValue.join(','),                     //国家
+        in_install_date1: this._state.reportQueryParams.activationTime[0], //激活开始日期
+        in_install_date2: this._state.reportQueryParams.activationTime[1], //激活结束日期
+        in_pay_date1: this._state.reportQueryParams.rechargeTime[0], //充值开始时间
+        in_pay_date2: this._state.reportQueryParams.rechargeTime[1], //充值结束时间
+        in_os:
+          this.systemValue.length == 3 ? "0,1" : this.systemValue.join(","), //系统
+        in_area_app_ids: this._key, //游戏层级
+        in_rpt_type: 4, //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
+        in_chart_type: 0, //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
+        in_view_type: this.viewValue, //视图类型：1 渠道 2 时间 3 地区
+        in_package_name: this.packageNameValue.includes("all")
+          ? ""
+          : this.packageNameValue.join(","), //包名
+        in_media_source: this.channelValue.includes("all")
+          ? ""
+          : this.channelValue.join(","), //渠道
+        in_country: this.areaValue.includes("all")
+          ? ""
+          : this.areaValue.join(",") //国家
       };
       // 第一步:先判断当前视图为表格(true)还是图例(false)
       if (this.$store.state.o_r_delivery.tableIsVisible) {
-        params.in_chart_type = 1
+        params.in_chart_type = 1;
       } else {
-        params.in_chart_type = 2
+        params.in_chart_type = 2;
       }
-      var newSelectData = {    
-        'viewValue':this.viewValue,
-        "systemValue":this.systemValue,
-        'packageNameData': this.packageNameOptions,
-        "packageNameValue": this.packageNameValue,
-        'channelData': this.channelOptions,
-        "channelDataValue": this.channelValue,
-        "areaData": this.areaOptions,
-        "areaDataValue": this.areaValue,
-        "allData": this._state.channelSelectDataBak.allData,
+      var newSelectData = {
+        viewValue: this.viewValue,
+        systemValue: this.systemValue,
+        packageNameData: this.packageNameOptions,
+        packageNameValue: this.packageNameValue,
+        channelData: this.channelOptions,
+        channelDataValue: this.channelValue,
+        areaData: this.areaOptions,
+        areaDataValue: this.areaValue,
+        allData: this._state.channelSelectDataBak.allData
       };
-      this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? 'channel' : 'legend' }).then(() => {
-        this.$store.commit("o_r_delivery/set_channelSelectDataInfo", newSelectData);
-        this.$emit('sendParams',this.viewValue)
-      });
-
-
+      this.$store
+        .dispatch("o_r_delivery/getReportInfo", {
+          params,
+          tag: this.$store.state.o_r_delivery.tableIsVisible
+            ? "channel"
+            : "legend"
+        })
+        .then(() => {
+          this.$store.commit(
+            "o_r_delivery/set_channelSelectDataInfo",
+            newSelectData
+          );
+          this.$emit("sendParams", this.viewValue);
+        });
     },
     resetSearchData() {
-      this.init_selectData(this._state.channelSelectDataBak)
+      this.init_selectData(this._state.channelSelectDataBak);
     }
-
-
-  },
-}
+  }
+};
 </script>
 <style lang="scss" scoped>
 .filterBox {
