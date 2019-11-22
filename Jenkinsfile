@@ -2,14 +2,14 @@ pipeline {
     agent { label 'ansible' }
     environment {
         project = "oas"
-        ppath = "/data/k8s/packages/prod/frontend"
+        path = "/data/k8s/packages/test/frontend"
     }
     stages {
         stage('BUILD') {
             agent { docker {
                 image 'reg.royale.com/ops/xynode:8-alpine'
                 label 'jenkins-slave'
-                args "-v ${ppath}:/data/app"
+                args "-v ${path}:/data/app"
             }}
             steps {
                 script {
@@ -20,11 +20,8 @@ pipeline {
                             npm run build
                             dt=$(date '+%Y%m%d')
                             mkdir -p /data/app/${project}/${dt}
-                            cd dist
-                            filename="${project}-$(date '+%Y%m%d%H%M%S').zip"
-                            zip -qr ${filename} *
-                            cp -rf ${filename} /data/app/${project}/${dt}/
-                            echo ${filename} > /data/app/${project}/${dt}/file.txt
+                            rm -rf /data/app/${project}/${dt}/dist
+                            cp -rf dist /data/app/${project}/${dt}/
                         '''
                     } catch(err) {
                         echo 'npm build error'
@@ -40,11 +37,16 @@ pipeline {
                     try {
                         sh '''
                             workspace=$(pwd)
-                            cd ${ppath}/${project}/$(date '+%Y%m%d')
-                            filename=$(cat file.txt)
+                            cd ${path}/${project}/$(date '+%Y%m%d')
+                            cd dist
+                            filename="${project}-$(date '+%Y%m%d%H%M%S').zip"
+                            zip -qr ${filename} *
+                            mv ${filename} ../
+                            cd ../
+                            rm -rf dist
 
                             cd ${workspace}/ansible
-                            src_file="${ppath}/${project}/$(date '+%Y%m%d')/${filename}"
+                            src_file="${path}/${project}/$(date '+%Y%m%d')/${filename}"
                             dest_file="/data/server_new/${filename}"
                             arch_file="${project}-$(date '+%Y%m%d%H%M%S').zip"
                             ansible-playbook -i hosts deploy.yml --extra-var "src_file=${src_file} dest_file=${dest_file} project=${project} arch_file=${arch_file}"
@@ -63,10 +65,10 @@ pipeline {
     post {
         success {
             sh '''
-                if curl -I http://oas.pocketgamesol.com 2>&1 | grep -q 200 ; then
-                    /bin/sh ansible/notify.sh "http://oas.pocketgamesol.com check success" "${JOB_NAME}" "${BUILD_NUMBER}"
+                if curl -I http://oas-test.pocketgamesol.com 2>&1 | grep -q 200 ; then
+                    /bin/sh ansible/notify.sh "http://oas-test.pocketgamesol.com check success" "${JOB_NAME}" "${BUILD_NUMBER}"
                 else
-                    /bin/sh ansible/notify.sh "http://oas.pocketgamesol.com cannot access" "${JOB_NAME}" "${BUILD_NUMBER}"
+                    /bin/sh ansible/notify.sh "http://oas-test.pocketgamesol.com cannot access" "${JOB_NAME}" "${BUILD_NUMBER}"
                 fi
             '''
         }

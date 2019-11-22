@@ -4,9 +4,9 @@
   remote_user: chadmin
   gather_facts: False
   vars:
-      program_path: "/data/web/sites/{{ project }}"
+      program_path: "/data/web/sites/oas-test"
       backup_root_path: /data/server_bak/web/sites
-      archive_path: /data/server_bak/archive_file/{{ project }}
+      archive_path: /data/server_bak/archive_file/oas-test
       archive_file: "{{ archive_path }}/{{ arch_file }}"
   tasks:
     - name: create /data/server_new if it's not exist
@@ -30,10 +30,10 @@
           chdir: "{{ backup_root_path }}"
 
     - name: archive file
-      shell: zip -qr {{ archive_file }} {{ project }} && echo "{{ archive_file }} archive file success" || echo "archive file failed"
+      shell: zip -qr {{ archive_file }} oas-test && echo "{{ archive_file }} archive file success" || echo "archive file failed"
       args:
           chdir: "{{ backup_root_path }}"
-
+   
     - name: update program
       unarchive: src={{ dest_file }} dest={{ program_path }} copy=no
 
@@ -42,4 +42,3 @@
 
     - name: nginx reload
       shell: sleep 1 && sudo /usr/local/nginx/sbin/nginx -s reload
-
