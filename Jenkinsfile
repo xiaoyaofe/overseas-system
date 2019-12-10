@@ -2,7 +2,7 @@ pipeline {
     agent { label 'ansible' }
     environment {
         project = "oas"
-        ppath = "/data/k8s/packages/test/frontend"
+        ppath = "/data/k8s/packages/prod/frontend"
     }
     stages {
         stage('BUILD') {
@@ -63,10 +63,10 @@ pipeline {
     post {
         success {
             sh '''
-                if curl -I http://oas-test.pocketgamesol.com 2>&1 | grep -q 200 ; then
-                    /bin/sh ansible/notify.sh "http://oas-test.pocketgamesol.com check success" "${JOB_NAME}" "${BUILD_NUMBER}"
+                if curl -I http://oas.pocketgamesol.com 2>&1 | grep -q 200 ; then
+                    /bin/sh ansible/notify.sh "http://oas.pocketgamesol.com check success" "${JOB_NAME}" "${BUILD_NUMBER}"
                 else
-                    /bin/sh ansible/notify.sh "http://oas-test.pocketgamesol.com cannot access" "${JOB_NAME}" "${BUILD_NUMBER}"
+                    /bin/sh ansible/notify.sh "http://oas.pocketgamesol.com cannot access" "${JOB_NAME}" "${BUILD_NUMBER}"
                 fi
             '''
         }
