@@ -22,6 +22,8 @@ const getSystemGames = () => {
   })
 }
 const formatSystemGame = (userGame) => {
+  console.log(887,userGame);
+
   var
     systems = {},
     defaultSystemId = Config.OverseasReleaseSysId;
@@ -51,6 +53,8 @@ const formatSystemGame = (userGame) => {
       })
     }
   })
+  console.log(887,systems);
+  
   store.commit('setSystems', systems)
   changeGame()
 }

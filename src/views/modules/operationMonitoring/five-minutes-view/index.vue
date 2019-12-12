@@ -170,6 +170,8 @@ export default {
     }
   },
   mounted() {
+        console.log(this.config);
+
     this.type = this.config[this.systemId].list[0]
     window.fiveMinInterval = setInterval(() => {
       this.query()
