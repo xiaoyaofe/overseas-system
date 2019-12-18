@@ -53,7 +53,7 @@
               <el-input
                 v-model="search"
                 size="mini"
-                placeholder="请输入游戏ID或游戏名搜索"/>
+                placeholder=" 请输入游戏ID或游戏名搜索"/>
             </template>
             <template slot-scope="scope">
                 <el-button
