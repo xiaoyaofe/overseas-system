@@ -14,7 +14,6 @@ let port = 8111
 // port = 7011
 
 // var baseUrl = requrl + ':' + port + '/api/v1.0'
-
 // 外网
 requrl = "https://integerOas.pocketgamesol.com"
 port = ''
