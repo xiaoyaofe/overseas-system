@@ -3,7 +3,6 @@
       <!-- <keep-alive> -->
         <component v-bind:is="currentTabComponent" @changComponents='changComponents'></component>
       <!-- </keep-alive> -->
-    
   </div>
 </template>
 <script>
