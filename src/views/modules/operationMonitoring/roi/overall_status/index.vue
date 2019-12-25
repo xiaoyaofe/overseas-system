@@ -115,7 +115,6 @@ export default {
     },
     // 看盘
     watchData(index) {
-      console.log('index', index)
       const time = new Date();
       const weekOne = time.setDate(time.getDate() - time.getDay() + 1)
       this.in_date_type = index;

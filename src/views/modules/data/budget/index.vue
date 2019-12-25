@@ -34,18 +34,17 @@
           <el-table-column
             v-for="(item, i) in (Object.keys($store.getters['o_c_budget/getTableData'].length?$store.getters['o_c_budget/getTableData'][0]:[]))"
             :key="i"
-            :sortable="i==3"
             :prop="item"
             :label="item"
             :width="i==3 ? 280:''"
             v-if="i==3"
           >
-          <template slot-scope="scope">
+            <template slot-scope="scope">
                 <el-input v-show="activityIndex == scope.$index" size="small" autofocus type="text" placeholder="请输入预算"
-                v-model="$store.getters['o_c_budget/getTableData'][scope.$index][item]" 
-                @blur="blurInput(scope.$index)"
+                v-model="scope.row.cost" 
+                @blur="blurInput(scope.$index,scope)"
                 ></el-input> 
-                <span v-show="activityIndex != scope.$index">{{$store.getters['o_c_budget/getTableData'][scope.$index][item]}}</span>
+                <span v-show="activityIndex != scope.$index">{{scope.row.cost}}</span>
             </template>
           </el-table-column>
           <el-table-column align="right" width="230">
@@ -106,16 +105,13 @@ export default {
     if (!this._state.gameList.length) this.getData('dividedInto',1);
   },
   watch: {
-    
       date(newValue,oldValue){
-           console.log(newValue,moment(newValue).add().format("YYYY-MM-DD"));
-
           this.$store.commit("o_c_budget/setDate",  moment(newValue).add().format("YYYY-MM-DD"));
       },
   },
   methods:{
       //分成比例修改   
-      blurInput(index){
+      blurInput(index,scope){
         this.activityIndex = -1
       },
       //添加行的索引值   
