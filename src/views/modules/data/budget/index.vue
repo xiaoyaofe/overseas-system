@@ -127,9 +127,7 @@ export default {
             in_buget_cost:scope.row.cost.format(2),               //预算(保留两位小数)
             in_operator_type:2,                //查询类型(1:预算信息,2:修改预算)
           };
-          console.log(params);
-          
-          // this.$store.dispatch("o_c_budget/getReportInfo", { params, tag: 'dividedInto' })
+          this.$store.dispatch("o_c_budget/getReportInfo", { params, tag: 'dividedInto' })
         }
     },
     //添加数据
