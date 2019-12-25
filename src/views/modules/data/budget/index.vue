@@ -122,7 +122,6 @@ export default {
      // 双击修改分成比例  
       handleCellClick(row, column, cell, event){
           var {label} = column;
-          console.log('row[column.property]',String(row[column.property] ))
           if (label == 'cost') {
               this.activityIndex = row.index
           }
