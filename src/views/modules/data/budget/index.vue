@@ -56,26 +56,13 @@
             </template>
             <template slot-scope="scope">
                 <el-button
-                @click.native.prevent="changeRow(scope.$index,)"
+                @click.native.prevent="changeRow(scope)"
                 type="primary"
                 size="small">
                 修改
                 </el-button>
             </template>
           </el-table-column>
-           <!-- <el-table-column
-            v-if="$store.getters['o_c_budget/getTableData'].length!=0"
-            label="操作"
-            width="160">
-            <template slot-scope="scope">
-                <el-button
-                @click.native.prevent="changeRow(scope.$index,)"
-                type="primary"
-                size="small">
-                修改
-                </el-button>
-            </template> -->
-            <!-- </el-table-column> -->
         </el-table>
       </div>
   </div>
@@ -127,20 +114,22 @@ export default {
           }
       },
     // 修改数据
-    changeRow(index){
+    changeRow(scope){
       // 预算是否为空
-        if (!this.$store.getters['o_c_budget/getTableData'][index]['cost']) {
+        if (!scope.row.cost) {
            return Utils.Notification.warning({message: '请将预算填写完整'})
         }
         if (confirm("确认修改？")) {
           var params = {
-            in_count_date: this._state.dividedInto[0][index]['统计时间'],  //开始日期
-            in_app_id: this._state.dividedInto[0][index].app_id,                     //游戏id
-            in_app_name:this._state.dividedInto[0][index].app_name,             //游戏名称
-            in_buget_cost:this._state.dividedInto[0][index].cost.format(2),               //预算(保留两位小数)
+            in_count_date: scope.row['统计时间'],  //开始日期
+            in_app_id: scope.row.app_id,                     //游戏id
+            in_app_name:scope.row.app_name,             //游戏名称
+            in_buget_cost:scope.row.cost.format(2),               //预算(保留两位小数)
             in_operator_type:2,                //查询类型(1:预算信息,2:修改预算)
           };
-          this.$store.dispatch("o_c_budget/getReportInfo", { params, tag: 'dividedInto' })
+          console.log(params);
+          
+          // this.$store.dispatch("o_c_budget/getReportInfo", { params, tag: 'dividedInto' })
         }
     },
     //添加数据

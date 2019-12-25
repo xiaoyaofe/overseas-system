@@ -55,8 +55,6 @@ export default {
             if (state.dividedInto && state.dividedInto[0]) { 
                 arr = state.dividedInto[0]
             }
-            console.log(996,arr);
-            
             return arr
         }
     },
