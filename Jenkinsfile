@@ -15,8 +15,8 @@ pipeline {
                 script {
                     try {
                         sh 'rm -rf dist'
-                        // sh 'rm -rf node_modules'
-                        // sh 'npm install'
+                        sh 'rm -rf node_modules'
+                        sh 'npm install'
                         sh '''
                             npm run build
                             dt=$(date '+%Y%m%d')
