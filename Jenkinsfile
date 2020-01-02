@@ -14,8 +14,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'rm -rf dist'
-                        sh 'rm -rf node_modules'
+                        sh 'rm -rf node_modules dist'
                         sh 'npm install'
                         sh '''
                             npm run build
