@@ -3,9 +3,11 @@ import api from 'src/services/api'
 import store from 'src/store'
 import router from 'src/router'
 import { OverseasReleaseSysId } from '../../config/dev.config';
+import { log } from 'util';
 const getSystemGames = () => {
+  
   api.user.getSystemGames({}).done(data => {
-    if (data.code == 401) {     
+    if (data.code == 401) {
       // 设置优先展示拥有权限的系统
       Config.OverseasReleaseSysId = data.state[0].systemId
       if (data.state.length == 0) {
@@ -18,14 +20,11 @@ const getSystemGames = () => {
       Utils.Notification({
         message: data.message
       })
-    }
+    } 
   })
 }
 const formatSystemGame = (userGame) => {
-  console.log(887,userGame);
-
-  var
-    systems = {},
+  var systems = {},
     defaultSystemId = Config.OverseasReleaseSysId;
   userGame.forEach(game => {
     let systemId = game.systemId
@@ -53,15 +52,16 @@ const formatSystemGame = (userGame) => {
       })
     }
   })
-  console.log(887,systems);
-  
-  store.commit('setSystems', systems)
-  changeGame()
+  let system = store.state.common.systems;
+  system[systems.systemId].children = systems[systems.systemId].children
+  store.commit('setSystems', system)
+  //切换游戏>>>
+  changeGame("getMenus");
 }
 /**
  * 选择游戏
  */
-const changeGame = () => {
+const changeGame = (flag) => {
   store.dispatch('clearSystemInfo')
   store.commit('OS/initOS')
   api.user.changeGame({
@@ -70,9 +70,9 @@ const changeGame = () => {
   }).then(data => {
     if (data.code == 303) {
       Promise.all([
-        // 
+        // 获取代理
         new Promise((resolve, reject) => {
-          if (store.state.common.systems.systemId == 4 || store.state.common.systems.systemId == 5 || store.state.common.nowgame===70001) {
+          if (store.state.common.systems.systemId == 4 || store.state.common.systems.systemId == 5 || store.state.common.nowgame === 70001) {
             resolve();
           } else {
             store.dispatch('Agent/data').then(() => {
@@ -107,7 +107,11 @@ const changeGame = () => {
           }
         })
       ]).then(() => {
-        getMenus()
+        if (flag) {
+          getMenus()                    
+        }else{
+          store.commit("SET_QUERY_DATA",Math.random()*10)
+        }
       }).catch(e => {
         console.error(e);
       });
@@ -119,12 +123,11 @@ const changeGame = () => {
     }
   })
 };
-
 /**
  * 获取菜单列表
  */
 const getMenus = () => {
-  api.user.getMenus().done(data => {
+  api.user.getMenus({}).done(data => {
     store.state.Common.couldQuery = true
     if (data.code == 401) {
       if (data.state.length == 0) {
@@ -134,6 +137,9 @@ const getMenus = () => {
         return;
       }
       var menus = formatMenus(data.state)
+      console.log(data.state);
+      console.log(menus);
+      
       store.commit("initMenus", menus)
       store.getters['getMenu']
       store.commit("selectMenu", getNowMenu(menus))
@@ -175,13 +181,13 @@ function fake(menus) {
   fake.menuName = "自渠道报表"
   fake.menuUrl = 'sub-channel-reports'
   menus[0].childrenMenu.push(fake)
-  console.log(menus)
   return menus
 }
 /**
  * 格式化菜单
  * @param {*} menus
  */
+
 const formatMenus = (menus) => {
   // var map1 = {}
   // var map2 = {}
@@ -203,13 +209,13 @@ const formatMenus = (menus) => {
   // var menus = []
   // menus.push(map1[''])
   var index = -1
-
   menus.forEach(({ childrenMenu, menuId }, i) => {
     if (menuId === 11) {
       index = i
     }
     childrenMenu.forEach(sec => {
-      sec.menuUrl = menuConfig[sec.menuId] ? menuConfig[sec.menuId].name : ''
+      sec.menuApi = sec.dataView[0];
+      sec.menuUrl = menuConfig[sec.menuId] ? menuConfig[sec.menuId].name : '';
       sec.parentId = menuId
     })
   })

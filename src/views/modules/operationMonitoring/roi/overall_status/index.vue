@@ -83,12 +83,20 @@ export default {
         });
       }
       return data
+    },
+    isQueryData(){
+      return this.$store.state.common.isQueryData
     }
   },
   watch: {
     date(data) {
       var date = data.map(item => moment(item).format("YYYY-MM-DD"));
       this.$store.commit("o_r_overall/setDate", date);
+    },
+    isQueryData(v,ov){
+      if (v != ov) {
+        this.getData()
+      }
     },
   },
   created() {
@@ -115,6 +123,7 @@ export default {
     },
     // 看盘
     watchData(index) {
+      console.log('index', index)
       const time = new Date();
       const weekOne = time.setDate(time.getDate() - time.getDay() + 1)
       this.in_date_type = index;

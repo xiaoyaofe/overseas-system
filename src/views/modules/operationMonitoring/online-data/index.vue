@@ -65,6 +65,9 @@ export default {
 		}
 	},
 	computed: {
+		isQueryData(){
+			return this.$store.state.common.isQueryData
+		},
 		dateList() {
 			return [
 				{
@@ -275,6 +278,11 @@ export default {
 			}
 	},
 	watch: {
+		isQueryData(v,ov){
+		if (v != ov) {
+			this.query()
+		}
+		},
 		type(v, ov) {
 			if (v != ov) {
 				if (v == 1) {

@@ -5,7 +5,7 @@
     <!-- 路由 -->
     <div class="viewMain">
       <div class="module" :class="{sm:isCompact,'hide-aside':$store.state.common.hideAside}">
-        <viewAside v-if="$store.state.common.systems.systemId==Config.DistributionSystemId"></viewAside>
+        <viewAside v-if="($store.state.common.systems.systemId==Config.DistributionSystemId) && ($route.path != '/data-overview')"></viewAside>
         <div class="wrapper">
           <div :class="['scroll',OverseasIssueClass?'overseas':'']" ref="scroll">
             <div class="module-head">
@@ -65,6 +65,9 @@ export default {
     var arr = ['/fn_report_plate','/plate-board','/data-overview','/five-min-view','/online-data','/five-force-model','/new-server-monitor','/new-user-payout-ratio','/big-R-user','/overall_status','/service_status','/channel_status'];
     this.OverseasIssueClass = arr.includes(to.path) ? true : false;
     next()
+  },
+  mounted() {
+    console.log(1111,this.$store.state.common);    
   },
   computed: {
     Config() {

@@ -72,7 +72,7 @@ export default {
             this.recordActive = this.nowActive = index;
           }
         });
-      });
+      });    
       return menus;
     },
     nowmenu() {
@@ -149,7 +149,7 @@ export default {
     },
     selectSystem(item) {
       this.$store.commit("changeSystem", item);
-      commonMethod.changeGame();
+      commonMethod.changeGame("getMenus")
     },
     toggleMenu() {
       if (this.isCompact) {

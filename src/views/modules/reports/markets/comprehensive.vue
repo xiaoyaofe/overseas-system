@@ -39,7 +39,6 @@ export default {
       $_order: 'descending'
     }
   },
-
   computed: {
     $$data() {
      return this.$store.getters['o_r_delivery/getComprehensive']

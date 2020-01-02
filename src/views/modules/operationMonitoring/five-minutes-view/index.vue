@@ -167,11 +167,12 @@ export default {
     },
     systemId() {
       return this.$store.state.common.systems.systemId
+    },
+    isQueryData(){
+      return this.$store.state.common.isQueryData
     }
   },
   mounted() {
-        console.log(this.config);
-
     this.type = this.config[this.systemId].list[0]
     window.fiveMinInterval = setInterval(() => {
       this.query()
@@ -389,6 +390,11 @@ export default {
     }
   },
   watch: {
+    isQueryData(v,ov){
+      if (v != ov) {
+        this.query()
+      }
+    },
     isCompact(v, ov) {
       if (v != ov) {
         this.query()

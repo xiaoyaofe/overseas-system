@@ -46,6 +46,11 @@ export default {
     date(data) {
       this.$store.commit("o_r_channel_status/setDate", moment(data).add(0, "day").format("YYYY-MM-DD"));
     },
+    isQueryData(v,ov){
+      if (v != ov) {
+        this.getData()
+      }
+    }
   },
   created() {
     this.dataInit()
@@ -55,6 +60,9 @@ export default {
     _state() {
       return this.$store.state.o_r_channel_status;
     },
+    isQueryData(){
+      return this.$store.state.common.isQueryData
+    }
   },
   methods: {
     formatter(row, column, value) {

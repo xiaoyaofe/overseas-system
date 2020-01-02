@@ -35,6 +35,7 @@ export default {
       region: null,
       regionArr: [],
       regionClass: {},
+
       game: null,
       gameArr: [],
       gameClass: {},

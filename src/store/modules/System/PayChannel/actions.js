@@ -1,6 +1,6 @@
 // 获取渠道列表并初始化数据存储
 import api from 'src/services/api'
-import store  from 'src/store'
+import store from 'src/store'
 
 
 class Data {
@@ -38,7 +38,7 @@ class Data {
       .done(data => {
         if (data.code == 401) {
           this.config = this.configs[store.state.common.systems.systemId]
-          if (data.state.length > 0 && data.state[0].length>0) {
+          if (data.state.length > 0 && data.state[0].length > 0) {
             this.serviceData = data.state[0]
             this.dataFormat()
           } else {

@@ -51,6 +51,7 @@ export default {
           nickName: data.state.userName
         }
         commonMethod.getSystemGames();
+        console.log("store.state.common.userInfo",userInfo);
         store.commit('initUserInfo', userInfo)
           // if (data.state.userGame.length > 0) {
           //   gamesDataset({

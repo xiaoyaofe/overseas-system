@@ -8,6 +8,7 @@ const state = {
   nowmenu: null,
   curLanguage: 'CHS',
   dataBoolean:true,
+  isQueryData:false,
   languages: {
     // CHS: require('src/components/system/language/packs/chs.js'), Tradition:
     // require('src/components/system/language/packs/tradition.js'), EN:
@@ -18,16 +19,20 @@ const state = {
 }
 
 const mutations = {
+  SET_QUERY_DATA(state,data){
+    state.isQueryData = data;
+  },
   setSystems(state, systems) {
     state.systems = systems
+    state.nowgame = state.systems[systems.systemId].children.length?state.systems[systems.systemId].children[0].id:0;
     // state.nowgame = state.systems.systemId = 4
     // return 
-    state.systems[state.systems.systemId].children.forEach((game, index) => {
-      if (index == 0) {
-        state.nowgame = game.id
-      }
-      return
-    })
+    // state.systems[state.systems.systemId].children.forEach((game, index) => {
+    //   if (index == 0) {
+    //     state.nowgame = game.id
+    //   }
+    //   return
+    // })
   },
   initUserInfo: (state, userInfo) => {
     state.userInfo = userInfo
@@ -39,17 +44,19 @@ const mutations = {
   },
   changeSystem: (state, systemId) => {
     state.systems.systemId = systemId
-    state.systems[state.systems.systemId].children.forEach((game, index) => {
-      if (index == 0) {
-        state.nowgame = game.id
-      }
-      return
-    })
+    state.nowgame = state.systems[systemId].children.length?state.systems[systemId].children[0].id:0;
+    // state.systems[state.systems.systemId].children.forEach((game, index) => {
+    //   if (index == 0) {
+    //     state.nowgame = game.id
+    //   }
+    //   return
+    // })
   },
   selectGame: (state, newGame) => {
     state.nowgame = newGame
   },
   initMenus: (state, menus) => {
+    console.log("initMenus",menus)
     state.menus = menus
   },
   selectMenu: (state, newMenu) => {
@@ -72,11 +79,8 @@ const mutations = {
 }
 
 const actions = {
-  clearSystemInfo({
-    commit
-  }) {
-    commit('clearInfo')
-
+  clearSystemInfo({commit}) {
+    // commit('clearInfo')
     store.state.Common.couldQuery = false
     for (let ModuleName in store.state) {
       let Module = store.state[ModuleName]

@@ -37,7 +37,7 @@ class Data {
   constructor({ resolve, reject }) {
     api
       .user
-      .getAreaZones({ isCache: 1 })
+      .getAreaZones({ isCache: 1,gameId:store.state.common.nowgame })
       .done(data => {
         if (data.code == 401) {
           this.config = this.configs[store.state.common.systems.systemId]
@@ -112,9 +112,7 @@ class Data {
       }
       return parentDefault[grandid]
     }
-    this
-      .serviceData
-      .forEach(e => {
+    this.serviceData.forEach(e => {
         let grandid = e[this.config.grandid],
           grandname = e[this.config.grandname].trim(),
           parentid = e[this.config.parentid],

@@ -25,7 +25,6 @@ export default {
     api.user.changeLanguage({
       language: store.state.Language.cur
     }).then(data => {
-      // console.log(data)
       if (data.code == 303) {
         commonMethod.getSystemGames();
       } else {

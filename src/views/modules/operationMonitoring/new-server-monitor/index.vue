@@ -51,7 +51,10 @@ export default {
 					endDate: this.date1[1],
 					change: (newDate) => { this.date1[0] = newDate.startDate;this.date1[1] = newDate.endDate;this.query() }
 				}]
-		}
+		},
+		isQueryData(){
+      return this.$store.state.common.isQueryData
+    }
   },
   data() {
     return {
@@ -68,7 +71,14 @@ export default {
   },
   mounted() {
     this.query();
-  },
+	},
+	watch: {
+		isQueryData(v,ov){
+      if (v != ov) {
+        this.query()
+      }
+    },
+	},
   methods: {
     query() {
       var params = {

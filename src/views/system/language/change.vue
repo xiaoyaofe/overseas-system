@@ -46,7 +46,20 @@ import api from 'src/services/api'
           language: this.cur
         }).then(data => {
           if (data.code == 303) {
-            commonMethod.getSystemGames();
+            switch (this.$store.state.common.systems.systemId) {
+              case 2:
+                commonMethod.getSystemGames();
+                break;
+              case 4:
+                commonMethod.getMenus();
+                break;
+              case 5:
+                commonMethod.getMenus();
+                break;
+              default:
+                break;
+            }
+            // commonMethod.getSystemGames();
           } else {
             Utils.Notification.error({
               message: data.message

@@ -67,6 +67,7 @@
             userName: username,
             password: md5(password),
             language: this.$store.state.Language.cur
+            
           })
         }
       }

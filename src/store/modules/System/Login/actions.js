@@ -2,6 +2,7 @@ import api from 'src/services/api'
 import store from 'src/store'
 import websocket from 'src/services/websocket'
 import commonMethod from 'src/utils/commonMethod'
+import { log } from 'util';
 
 
 // function gamesDataset({ userGame }) {
@@ -41,7 +42,6 @@ export default {
       password,
       language
     }).then((data) => {
-      // console.log(data)
       if (data.code === 301) {
         // console.log(Utils)
         Utils.Notification.success({
@@ -50,7 +50,50 @@ export default {
         // console.log('websocket')
         websocket.initConnect();
         // console.log('websocket')
-        commonMethod.getSystemGames();
+        // 登录成功>>>设置系统
+        var systemsID = data.state.systems.filter((todo)=>todo.type == "oas_menu")
+        var systemsObj = {}
+        var systemParams = []
+        systemsID.map((todo)=>systemParams.push({id:todo.systemId,name:todo.systemName,children:[]}))
+        systemParams.map((todo)=>systemsObj[todo.id]=todo)
+        systemsObj.systemId = systemParams[0].id;
+        store.commit('selectGame', 0)
+        store.commit('setSystems', systemsObj)     
+        switch (data.state.systems[0].systemId) {
+          case 2:
+            commonMethod.getSystemGames();
+            break;
+          case 4:
+            commonMethod.changeGame("switch language");
+            break;
+          case 5:
+            commonMethod.changeGame("switch language");
+            break;
+          default:
+            break;
+        }
+        // var hash = {};
+        // var systems = {};
+        // let systemsData = data.state.systems.reduce(function (item, next) {
+        //   hash[next.systemId] ? '' : hash[next.systemId] = true && item.push(next);
+        //   return item
+        // }, [])
+        // for (let index = 0; index < systemsData.length; index++) {
+        //   systems[systemsData[index].systemId] = {
+        //     id: systemsData[index].systemId,
+        //     name: systemsData[index].systemName,
+        //     children: []
+        //   }
+        // }
+        // //默认系统ID为发行系统
+        // systems.systemId = Config.DistributionSystemId;
+        // store.commit('setSystems', systems)
+        
+        // if (systems.systemId == 2) {
+        //   // 查询游戏>>>
+        //   commonMethod.getSystemGames();
+
+        // }
         store.commit('initUserInfo', {
           userName,
           nickName: data.state.userName || userName
