@@ -390,6 +390,7 @@ export default {
     }
   },
   watch: {
+    //切换游戏
     isQueryData(v,ov){
       if (v != ov) {
         this.query()

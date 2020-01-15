@@ -122,6 +122,7 @@
         } else {
           this.$store.commit('RegChannel/confirm', $.extend(true, {}, this.data))
           this.$store.commit('AsideToggleShow', 2);
+          this.$store.commit("SET_QUERY_DATA",Math.random()*10)          
         }
       },
       toggle(e) {
