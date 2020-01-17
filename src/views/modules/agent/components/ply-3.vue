@@ -125,6 +125,7 @@ export default {
           message: "代理商不能为空~"
         })
       } else {
+        this.$store.commit("SET_QUERY_DATA",Math.random()*10)                            
         this.$store.commit('Agent/confirm', $.extend(true, {}, this.data))
         this.$store.commit('AsideToggleShow', 1);
       }

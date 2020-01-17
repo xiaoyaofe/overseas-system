@@ -32,7 +32,6 @@ class Data {
   }
   config
   constructor({ resolve, reject }) {
-    console.log('tag store.state', store.state)
     api.user.getChannels({ isCache: 1,gameId:store.state.common.nowgame })
       .done(data => {
         if (data.code == 401) {
