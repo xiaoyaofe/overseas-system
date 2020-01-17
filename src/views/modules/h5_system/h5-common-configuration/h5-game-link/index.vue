@@ -320,7 +320,7 @@ export default {
         in_app_url:this.in_app_url,
         in_media_source:this.in_media_source,
         in_app_tag:this.in_app_tag,
-        in_app_tag_desc:this.in_app_tag_desc,
+        in_app_tag_desc:this.in_app_tag_desc.trim(),
         in_id:this.in_id,
         in_operator_type:index,
       }
