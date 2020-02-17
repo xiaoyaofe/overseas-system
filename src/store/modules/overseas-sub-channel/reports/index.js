@@ -382,15 +382,16 @@ export default {
               dailyData.total[key] = (cost / create).format(2)
               break;
             case keys[index.roiIndex]:
-              var roi = dailyData.total[keys[index.roiIndex]]
-              var cost = dailyData.total[keys[index.costIndex]]
-              dailyData.total[key] = ((roi / cost)).format(2) + '%'
+              var allRecharge = dailyData.total[keys[index.rechargeIndex]]
+              var allCost = dailyData.total[keys[index.costIndex]]
+              console.log(888,allRecharge,allCost,dailyData.total)
+              dailyData.total[key] = ((allRecharge / allCost)*100).format(2) + '%'
               break;
-            case keys[index.roiIndex]:
-              var roi = dailyData.total[keys[index.rechargeIndex]]
-              var cost = dailyData.total[keys[index.costIndex]]
-              dailyData.total[key] = ((roi / cost)*100).format(2) + '%'
-              break;
+            // case keys[index.roiIndex]:
+            //   var roi = dailyData.total[keys[index.rechargeIndex]]
+            //   var cost = dailyData.total[keys[index.costIndex]]
+            //   dailyData.total[key] = ((roi / cost)*100).format(2) + '%'
+            //   break;
             case keys[index.minuteIndex]:
                 var cost = dailyData.total[keys[index.minuteRechargeIndex]]
                 var allCost = dailyData.total[keys[index.costIndex]]
