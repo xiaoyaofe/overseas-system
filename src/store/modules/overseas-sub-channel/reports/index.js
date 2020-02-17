@@ -384,7 +384,6 @@ export default {
             case keys[index.roiIndex]:
               var allRecharge = dailyData.total[keys[index.rechargeIndex]]
               var allCost = dailyData.total[keys[index.costIndex]]
-              console.log(888,allRecharge,allCost,dailyData.total)
               dailyData.total[key] = ((allRecharge / allCost)*100).format(2) + '%'
               break;
             // case keys[index.roiIndex]:
