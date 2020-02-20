@@ -86,7 +86,18 @@ export default {
             this.query()
           }
         }]
+    },
+    isQueryData(){
+      return this.$store.state.common.isQueryData
     }
+  },
+  watch: {
+    //切换游戏
+    isQueryData(v,ov){
+      if (v != ov) {
+        this.query()
+      }
+    },
   },
   mounted() {
     this.query();
