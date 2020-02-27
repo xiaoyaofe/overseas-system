@@ -1,6 +1,27 @@
 let obj
 if (IS_DEV) {
   obj = {
+    7: {
+      name: 'feedback',
+      component: resolve =>
+        require([
+          'src/views/modules/feedback'
+        ], resolve)
+    },
+    8: {
+      name: 'feedback',
+      component: resolve =>
+        require([
+          'src/views/modules/feedback'
+        ], resolve)
+    },
+    9: {
+      name: 'feedback',
+      component: resolve =>
+        require([
+          'src/views/modules/feedback'
+        ], resolve)
+    },
     101: {
       name: 'five-min-view',
       component: resolve =>
@@ -328,6 +349,27 @@ if (IS_DEV) {
 
 } else {
   obj = {
+    7: {
+      name: 'feedback',
+      component: resolve =>
+        require([
+          'src/views/modules/feedback'
+        ], resolve)
+    },
+    8: {
+      name: 'feedback',
+      component: resolve =>
+        require([
+          'src/views/modules/feedback'
+        ], resolve)
+    },
+    9: {
+      name: 'feedback',
+      component: resolve =>
+        require([
+          'src/views/modules/feedback'
+        ], resolve)
+    },
     101: {
       name: 'five-min-view',
       component: resolve =>
