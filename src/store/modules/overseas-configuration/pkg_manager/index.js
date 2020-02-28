@@ -93,10 +93,8 @@ export default {
       } = context
       return new Promise(resolve => {
         var url = '/query/' + rootGetters.getMenu[Config.PackageManagerId].dataView[1]
-        http.post(url, param).then(({
-          code
-        }) => {
-          if (code === 401) {
+        http.post(url, param).then((data) => {
+          if (data.code === 401) {
             var {
               keys,
               index,
@@ -114,15 +112,17 @@ export default {
               in_os,
               in_package_name
             } = param
-            var list = {}
-            list[keys[idIndex]] = in_app_id
-            list[keys[gameIndex]] = in_app_name
-            list[keys[osIndex]] = in_os
-            list[keys[pkgIndex]] = in_package_name
-            list = [list].concat(pkgList[0])
-            commit('setPkgList', [list])
+            if (data.state[0][0].fn_report_add_app_package.includes('t')) {
+              var list = {}
+              list[keys[idIndex]] = in_app_id
+              list[keys[gameIndex]] = in_app_name
+              list[keys[osIndex]] = in_os
+              list[keys[pkgIndex]] = in_package_name
+              list = [list].concat(pkgList[0])
+              commit('setPkgList', [list])
+            }
             getters.getPkgList
-            resolve()
+            resolve(data)
           }
         })
       })

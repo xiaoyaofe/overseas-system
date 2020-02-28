@@ -5,7 +5,7 @@
         <el-option v-for="item in _gameList" :key="item.id" :label="item.name" :value="item">
         </el-option>
       </el-select>
-      <el-select class="os" v-model="os" size="medium">
+      <el-select class="os" v-model="os"  placeholder="请选择系统" size="medium">
         <el-option v-for="item in options" :key="item.value" :label="item.txt" :value="item.os"></el-option>
       </el-select>
     </my-row>
@@ -120,11 +120,14 @@ export default {
           in_package_name: this.pkg_name,
           in_os: +this.os
         })
-        .then(() => {
-          this.$notify({
-            type: "success",
-            message: "添加成功"
-          });
+        .then((data) => {
+          if (data.state[0][0].fn_report_add_app_package.includes('t')) {
+             this.$notify({type: "success",message: "添加成功"});
+          }else{
+             this.$notify({type: "error",message: "添加失败，sdk无此包"});
+             this.pkg_name = ""
+          }
+         
         });
     },
     formatterDel(row, col, val) {
