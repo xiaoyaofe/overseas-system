@@ -7,9 +7,9 @@
         </section> -->
         <div class="content">
             <section v-for="(item,i) in feepBackData" :key="i">
-                <h5 class="cDescription">{{i+1}}&nbsp;问题描述:&nbsp;{{item.description}}</h5>
+                <h5 class="cDescription" v-if="item.description">{{i+1}}&nbsp;问题描述:&nbsp;{{item.description}}</h5>
                 <div>
-                    <h5 class="cSolve"  v-if="item.cSolve">解决方法:&nbsp;{{item.solve}}</h5>
+                    <h5 class="cSolve"  v-if="item.solve">&nbsp;解决方法:&nbsp;{{item.solve}}</h5>
                     <el-button type="success" v-if="item.isButton" @click="dialogVisible = true">重数数据</el-button>
                     <p class="tipTxt" v-if="item.isButton">( 提示:不建议频繁调用重数数据,只允许重算日数据 )</p>
                 </div>
@@ -49,18 +49,18 @@ export default {
             inputTxt:'',
             feepBackData:[
                 {
-                    description:'指针转盘趋势：注册人数不正常，偏少',
+                    description:'页面图表数据(例:五分钟视图、指标趋势看盘、新用户留存率等)展示异常(骤减)，如下图所示:',
                     solve:'',
                     imageUrl:require('../images/hy_1.png') ,
                     isButton:false,
                 },{
-                    description:'SDK后台区服核对：新服是否添加（运营添加）',
-                    solve:'',
+                    description:'',
+                    solve:'第一步: 检查核对SDK后台区服，确认新服是否添加，（如未添加,请联系运营同学添加）',
                     imageUrl:require('../images/hy_2.png'), 
                     isButton:false,
                 },{
-                    description:'新渠道包是否有添加（技术添加）',
-                    solve:'',
+                    description:'',
+                    solve:'第二步: 检查核对新渠道包是否有添加，(如未添加，请联系技术同学添加)',
                     imageUrl:require('../images/hy_3.png'),
                     isButton:false,
                 }
@@ -91,7 +91,6 @@ export default {
                         } else {
                             this.$notify({type: "warning", message: data.message});
                         }
-                        console.log(data)
                     })
 
             }

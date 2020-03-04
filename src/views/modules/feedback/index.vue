@@ -20,7 +20,6 @@ export default {
         }
     },
     created () {
-        console.log("systemId>>>>>>>>>",this.$store.state.common.systems.systemId);
         let systemId =this.$store.state.common.systems.systemId;
         switch (systemId) {
             case 2://海外发行系统
