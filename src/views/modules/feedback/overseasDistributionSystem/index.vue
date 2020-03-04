@@ -92,7 +92,6 @@ export default {
                             this.$notify({type: "warning", message: data.message});
                         }
                     })
-
             }
         },
     },
