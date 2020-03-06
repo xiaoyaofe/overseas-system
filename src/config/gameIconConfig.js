@@ -28,6 +28,7 @@ export default {
       10203:require('src/assets/gameicon/game_icon_10203.jpg'), // 泰国火影
       10193:require('src/assets/gameicon/game_icon_10193.png'), // 泰国火影
       
+      
       70001:require('src/assets/gameicon/allData.png'), // 综合数据
     },
     3: {// efunfun分析系统
