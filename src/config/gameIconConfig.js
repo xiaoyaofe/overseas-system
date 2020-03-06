@@ -26,7 +26,7 @@ export default {
       10183:require('src/assets/gameicon/game_icon_10183.png'), // 火影忍者H5
       10213:require('src/assets/gameicon/game_icon_10213.png'), // 火影英文全球H5
       10203:require('src/assets/gameicon/game_icon_10203.jpg'), // 泰国火影
-
+      10193:require('src/assets/gameicon/game_icon_10193.png'), // 泰国火影
       
       70001:require('src/assets/gameicon/allData.png'), // 综合数据
     },
