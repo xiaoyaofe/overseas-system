@@ -166,6 +166,9 @@ export default {
 							case 8:
 							chartData[7].data.push(+this.detailData[index][key])
 							break;
+							case 9:
+							chartData[8].data.push(+this.detailData[index][key])
+							break;
 							default:
 							break;
 						}
@@ -182,7 +185,7 @@ export default {
 
 		},
 		exportData() {
-      var params = {
+			var params = {
 				in_begin_date: this.date1[0],
 				in_end_date: this.date1[1],
 				in_app_id:this.$store.state['common'].nowgame,
@@ -191,8 +194,8 @@ export default {
 				in_channel_id: this.$store.getters['RegChannel/selected3IdList'],
 				in_date_type: this.in_date_type,
 			}
-      api.user.exportData(params)
-    },
+			api.user.exportData(params)
+		},
 		drawChart(xAxis,data) {
 			var chart = Highcharts.chart('hourChart', {
 				chart: {

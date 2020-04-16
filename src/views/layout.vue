@@ -66,9 +66,6 @@ export default {
     this.OverseasIssueClass = arr.includes(to.path) ? true : false;
     next()
   },
-  mounted() {
-    console.log(1111,this.$store.state.common);    
-  },
   computed: {
     Config() {
       return Config

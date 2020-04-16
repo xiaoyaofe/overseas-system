@@ -555,7 +555,6 @@ export default {
             getTotal(data, regionName, isLast)
           })
         })
-        console.log('comprehensiveData:->', comprehensiveData)
         return comprehensiveData
       } else {
         return null

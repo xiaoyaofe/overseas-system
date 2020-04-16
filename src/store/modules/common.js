@@ -56,7 +56,6 @@ const mutations = {
     state.nowgame = newGame
   },
   initMenus: (state, menus) => {
-    console.log("initMenus",menus)
     state.menus = menus
   },
   selectMenu: (state, newMenu) => {

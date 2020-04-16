@@ -137,9 +137,6 @@ const getMenus = () => {
         return;
       }
       var menus = formatMenus(data.state)
-      console.log(data.state);
-      console.log(menus);
-      
       store.commit("initMenus", menus)
       store.getters['getMenu']
       store.commit("selectMenu", getNowMenu(menus))
