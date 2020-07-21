@@ -70,6 +70,13 @@ if (IS_DEV) {
           'src/views/modules/operationMonitoring/plate-board'
         ],resolve)
     },
+    108: {
+      name: 'channel-distribution',
+      component: resolve =>
+        require([
+          'src/views/modules/operationMonitoring/channel-distribution'
+        ], resolve)
+    },
     201: {
       name: 'five-force',
       component: resolve =>
