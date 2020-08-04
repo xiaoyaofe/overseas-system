@@ -27,7 +27,9 @@ export default {
       10213:require('src/assets/gameicon/game_icon_10213.png'), // 火影英文全球H5
       10203:require('src/assets/gameicon/game_icon_10203.jpg'), // 泰国火影
       10193:require('src/assets/gameicon/game_icon_10193.png'), // 泰国口袋冒险家
-      10223:require('src/assets/gameicon/game_icon_10223.png'), // 百万街机铺鱼
+      10223: require('src/assets/gameicon/game_icon_10223.png'), // 百万街机铺鱼
+      10233: require('src/assets/gameicon/game_coin_10233.png'), // 百万街机铺鱼
+      
       
       70001:require('src/assets/gameicon/allData.png'), // 综合数据
     },

@@ -343,10 +343,10 @@ export default {
                   0
                 );
                 table_data.push({
-                  日期: flag,
-                  渠道名: todo,
-                  充值笔数: pay_number_sum,
-                  充值金额: pay_money_sum.toFixed(2)
+                  '日期': flag,
+                  '渠道名': todo,
+                  '充值笔数': pay_number_sum,
+                  '充值金额': pay_money_sum.toFixed(2)
                 });
               }
             });
