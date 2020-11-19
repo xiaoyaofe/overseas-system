@@ -12,13 +12,16 @@ let port = 8111
 
 // requrl = "http://172.16.3.171"
 // port = 7011
-// var baseUrl = requrl + ':' + port + '/api/v2.0'
+
+requrl = "http://113.107.160.59"
+port = 7011
+var baseUrl = requrl + ':' + port + '/api/v2.0'
 
 
 // 外网
-requrl = "https://integerOas.pocketgamesol.com"
-port = ''
-var baseUrl = requrl + '/api/v2.0'
+// requrl = "https://integerOas.pocketgamesol.com"
+// port = ''
+// var baseUrl = requrl + '/api/v2.0'
 
 export {
   baseUrl
