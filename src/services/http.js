@@ -14,6 +14,10 @@ requrl = "http://113.107.160.59"
 port = 7011
 var baseUrl = requrl + ':' + port + '/api/v2.0'
 
+requrl = "http://113.107.160.59"
+port = 7011
+var baseUrl = requrl + ':' + port + '/api/v2.0'
+
 
 // 外网
 // requrl = "https://integerOas.pocketgamesol.com"
