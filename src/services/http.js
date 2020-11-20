@@ -16,18 +16,19 @@ var baseUrl = requrl + ':' + port + '/api/v2.0'
 
 
 // 外网
-// requrl = "http://113.107.160.59:7011/"
+// requrl = "https://integerOas.pocketgamesol.com"
 // port = ''
 // var baseUrl = requrl + '/api/v2.0'
+
 
 export {
   baseUrl
 }
 export default {
   // 内网
-  // host: requrl + ':' + port,
+  host: requrl + ':' + port,
   // 外网
-  host: requrl,
+  // host: requrl,
   jsonp(url, data, close) {
     let ajax = $.ajax({
       url: url ? baseUrl + url : baseUrl + data.url,
