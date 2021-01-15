@@ -162,116 +162,35 @@ export default {
         },
         getDateTime() {
             this.nowTime = moment().format("HH:mm:ss");
-        },
-        // single_query() {
-        //     var params = {
-        //         in_begin_date: this.date1[0],
-        //         in_end_date: this.date1[1],
-        //         in_app_id: this.$store.state["common"].nowgame,
-        //         dataview: this.$store.state.common.nowmenu.dataView[0],
-        //         in_gamezone_id: this.$store.getters["Agent/selectedIdList"],
-        //         in_channel_id: this.$store.getters[
-        //             "RegChannel/selected3IdList"
-        //         ],
-        //         in_date_type: this.in_date_type
-        //     };
-        //     api.user.getQuery(params).then(data => {
-        //         if (data.code == 401) {
-		// 			this.channel_table_view="渠道分包视图";
-        //             this.tableData = data.state[0];
-        //             this.detailData = [...data.state[0]].reverse();
-        //             var xAxis = [];
-        //             var chartData = [];
-        //             // 获取data
-        //             Object.keys(this.detailData[0]).forEach((key, index) => {
-        //                 if (index > 0) {
-        //                     chartData.push({ name: key, data: [] });
-        //                 }
-        //             });
-        //             // 获取x轴横坐标
-        //             for (
-        //                 let index = 0;
-        //                 index < this.detailData.length;
-        //                 index++
-        //             ) {
-        //                 Object.keys(this.detailData[index]).forEach(
-        //                     (key, msg) => {
-        //                         switch (msg) {
-        //                             case 0:
-        //                                 xAxis.push(this.detailData[index][key]);
-        //                                 break;
-        //                             case 1:
-        //                                 chartData[0].data.push(
-        //                                     +this.detailData[index][key]
-        //                                 );
-        //                                 break;
-        //                             case 2:
-        //                                 chartData[1].data.push(
-        //                                     +this.detailData[index][key]
-        //                                 );
-        //                                 break;
-        //                             case 3:
-        //                                 chartData[2].data.push(
-        //                                     +this.detailData[index][key]
-        //                                 );
-        //                                 break;
-        //                             case 4:
-        //                                 chartData[3].data.push(
-        //                                     +this.detailData[index][key]
-        //                                 );
-        //                                 break;
-        //                             case 5:
-        //                                 chartData[4].data.push(
-        //                                     +this.detailData[index][key]
-        //                                 );
-        //                                 break;
-        //                             case 6:
-        //                                 chartData[5].data.push(
-        //                                     +this.detailData[index][key]
-        //                                 );
-        //                                 break;
-        //                             case 7:
-        //                                 chartData[6].data.push(
-        //                                     +this.detailData[index][key]
-        //                                 );
-        //                                 break;
-        //                             case 8:
-        //                                 chartData[7].data.push(
-        //                                     +this.detailData[index][key]
-        //                                 );
-        //                                 break;
-        //                             case 9:
-        //                                 chartData[8].data.push(
-        //                                     +this.detailData[index][key]
-        //                                 );
-        //                                 break;
-        //                             default:
-        //                                 break;
-        //                         }
-        //                     }
-        //                 );
-        //             }
-        //             this.drawChart(xAxis, chartData);
-        //         } else {
-        //             Utils.Notification.error({ message: data.message });
-        //             console.error(data.message);
-        //         }
-        //     });
+		},
+		// 导出表格
+		exportData() {
+			debugger
+			var timestamp = Date.now()
+			var thead = document.querySelector('.el-table__header thead').innerHTML
+			var tbody = document.querySelector('.el-table__body tbody').innerHTML
+			var table = document.createElement('table')
+			table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
+			Utils.tableToExcel(
+				table,
+				false,
+				timestamp + '.xls'
+			)
+		},
+        // exportData() {
+            // var params = {
+            //     in_begin_date: this.date1[0],
+            //     in_end_date: this.date1[1],
+            //     in_app_id: this.$store.state["common"].nowgame,
+            //     dataview: this.$store.state.common.nowmenu.dataView[0],
+            //     in_gamezone_id: this.$store.getters["Agent/selectedIdList"],
+            //     in_channel_id: this.$store.getters[
+            //         "RegChannel/selected3IdList"
+            //     ],
+            //     in_date_type: this.in_date_type
+            // };
+            // api.user.exportData(params);
         // },
-        exportData() {
-            var params = {
-                in_begin_date: this.date1[0],
-                in_end_date: this.date1[1],
-                in_app_id: this.$store.state["common"].nowgame,
-                dataview: this.$store.state.common.nowmenu.dataView[0],
-                in_gamezone_id: this.$store.getters["Agent/selectedIdList"],
-                in_channel_id: this.$store.getters[
-                    "RegChannel/selected3IdList"
-                ],
-                in_date_type: this.in_date_type
-            };
-            api.user.exportData(params);
-        },
         drawChart(xAxis, data) {
             var chart = Highcharts.chart("hourChart", {
                 chart: {
@@ -475,9 +394,8 @@ export default {
 			if (ev==="渠道分包视图") {
 				this.tableData = this.TABLEDATA;
 			}else{
-				this.tableData = this.TABLEDATA_TOTAL.reverse();
+				this.tableData = this.TABLEDATA_TOTAL;
 			}
-			console.log("!!",ev)
 		}
     },
     watch: {
