@@ -1,8 +1,8 @@
 import Loader from 'src/views/system/loader/loader.js'
 import router from 'src/router'
 
-let requrl = 'http://121.10.140.56'
-let port = 8111
+let requrl
+let port
 //内网
 // requrl = "http://172.16.3.144"
 // port = 7011
@@ -13,24 +13,24 @@ let port = 8111
 // requrl = "http://172.16.3.171"
 // port = 7011
 
-requrl = "http://113.107.160.59"
-port = 7011
-var baseUrl = requrl + ':' + port + '/api/v2.0'
+// requrl = "http://113.107.160.59"
+// port = 7011
+// var baseUrl = requrl + ':' + port + '/api/v2.0'
 
 
 // 外网
-// requrl = "https://integerOas.pocketgamesol.com"
-// port = ''
-// var baseUrl = requrl + '/api/v2.0'
+requrl = "http://oas.changic.net.cn"
+port = ''
+var baseUrl = requrl + '/api/v2.0'
 
 export {
   baseUrl
 }
 export default {
   // 内网
-  // host: requrl + ':' + port,
+  host: requrl + ':' + port,
   // 外网
-  host: requrl,
+  // host: requrl,
   jsonp(url, data, close) {
     let ajax = $.ajax({
       url: url ? baseUrl + url : baseUrl + data.url,
