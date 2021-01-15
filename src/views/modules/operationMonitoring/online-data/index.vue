@@ -279,7 +279,6 @@ export default {
                 in_end_date: this.date1[1],
 				in_app_id: this.$store.state["common"].nowgame,
 				dataview: this.$store.state.common.nowmenu.dataView[0],				
-                // dataview: "fn_report_indicator_trend_detail",
                 in_gamezone_id: this.$store.getters["Agent/selectedIdList"],
                 in_channel_id: this.$store.getters[
                     "RegChannel/selected3IdList"
@@ -288,6 +287,7 @@ export default {
 			};
             api.user.getQuery(params).then(data => {
 				if (data.code == 401) {
+					this.channel_table_view="渠道汇总视图",
 					// 每次请求成功都清空上一次的求和
 					this.TABLEDATA_TOTAL = [];
 					this.TABLEDATA = data.state[0];
