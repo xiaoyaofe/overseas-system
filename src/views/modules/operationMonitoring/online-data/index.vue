@@ -165,7 +165,6 @@ export default {
 		},
 		// 导出表格
 		exportData() {
-			debugger
 			var timestamp = Date.now()
 			var thead = document.querySelector('.el-table__header thead').innerHTML
 			var tbody = document.querySelector('.el-table__body tbody').innerHTML
