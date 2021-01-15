@@ -16,12 +16,17 @@ let port
 // requrl = "http://113.107.160.59"
 // port = 7011
 // var baseUrl = requrl + ':' + port + '/api/v2.0'
+requrl = "http://113.107.160.59"
+port = 7011
+
+var baseUrl = requrl + ':' + port + '/api/v2.0'
 
 
 // 外网
 requrl = "http://oas.changic.net.cn"
 port = ''
 var baseUrl = requrl + '/api/v2.0'
+
 
 export {
   baseUrl
